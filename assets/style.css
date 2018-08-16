@@ -6,3 +6,15 @@ body,html{
     padding: 0;
     height: 100%;
 }
+
+.ask-box {
+    margin-bottom: 32px;
+}
+
+#submit {
+    margin: 5px 0 0 15px;
+}
+
+form {
+    margin-bottom: 0;
+}

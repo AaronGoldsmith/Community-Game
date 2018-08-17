@@ -18,29 +18,63 @@
 
     <body>
         <div class="jumbotron jumbotron-fluid">
-            <h1 class="display-4 text-center">Community Survey</h1>
+            <h1 class="display-6 text-center">Community Survey</h1>
         </div>
 
         <div class="container">
-            <div class="card ask-box">
-                <div class="card-body">
-                    <h5 class="card-title">Ask a question</h5>
-                    <form>
-                        <input type="text" class="form-control" id="question-input" placeholder="">
-                        <button type="button" class="btn btn-primary" id="submit">Submit</button>
+            <div class="row ask-box justify-content-center">
+                <div class="col-md-6 text-center">
+                    <form class="input-group" autocomplete="off">
+                        <input type="text" class="form-control" id="question-input" placeholder="Ask a question...">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-outline-secondary" id="submit">Submit</button> 
+                        </div>
                     </form>
+                    <small id="login" class="form-text text-muted"><a href="#">Log in</a> to start asking questions.</small>
                 </div>
             </div>
 
-            <div class="questions-container">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">example question</h5>
-                        <p class="card-text" id="placeholder">Question is card appended to question container</p>
+                <div class="active-question">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">example question</h5>
+                            <p class="card-text" id="placeholder">Active question card</p>
+                        </div>
                     </div>
+                </div>
+
+            <div class="card tba-card">
+                <div class="card-body">
+                    <h5 class="card-title">vote for upcoming questions</h5>
+                    <table class="table">
+                        <tbody id="tba-container"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
+
+        <script>
+        // Just demo script for testing. We don't want js here.
+
+        var question = '';
+
+        function addQuestion() {
+            var newRow = $('<tr>');
+            var newCol = $('<td>');
+            newCol.append(question);
+            newRow.append(newCol);
+            $('#tba-container').append(newRow);
+        };
+
+        $('#submit').on('click', function() {
+            event.preventDefault();
+            question = $('#question-input').val().trim();
+
+            addQuestion();
+            $('#question-input').val('');
+        });
+        
+        </script>
     </body>
 
 

@@ -5,4 +5,43 @@ body,html{
     margin: 0;
     padding: 0;
     height: 100%;
+    background: #e5efff;
+}
+
+.jumbotron {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.card, .btn {
+    border-radius: 0;
+}
+
+.ask-box {
+    margin-bottom: 32px
+}
+
+#question-input {
+    background: transparent;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+}
+
+#question-input:focus {
+    box-shadow: none;
+    background: #a6c1ed;
+    color: #fff;
+}
+
+#question-input:focus::placeholder {
+    color: #fff; 
+}
+
+form {
+    margin-bottom: 0;
+}
+
+.tba-card {
+    margin-top: 64px;
 }

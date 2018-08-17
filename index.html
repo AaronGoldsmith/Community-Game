@@ -9,18 +9,20 @@
         integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
         crossorigin="anonymous">
         <link rel = "stylesheet" href="assets/style.css" type="text/css">
-
+        <!-- Added fontawesome for arrow icons -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
         <!-- link jquery and javascript files -->
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>           
         <script src="assets/script.js"></script>
         <script src="assets/author.js"></script>
-
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/p5.js"></script>
+        <script src="assets/sketch.js"></script>
 
     </head>
 
     <body>
         <div class="jumbotron jumbotron-fluid">
-            <h1 class="display-6 text-center">Community Survey</h1>
+            <h1 class="display-6 text-center">Community Survey </h1>
         </div>
 
         <div class="container">
@@ -37,10 +39,10 @@
             </div>
 
                 <div class="active-question">
-                    <div class="card">
+                    <div class="card text-center">
                         <div class="card-body">
-                            <h5 class="card-title">example question</h5>
-                            <p class="card-text" id="placeholder">Active question card</p>
+                            <h5 class="card-title">question placeholder text?</h5>
+                            <div id="sketch-box"></div>
                         </div>
                     </div>
                 </div>
@@ -53,6 +55,7 @@
                     </table>
                 </div>
             </div>
+
         </div>
 
         <script>
@@ -61,10 +64,18 @@
         var question = '';
 
         function addQuestion() {
+            // Create single row+column for new question
             var newRow = $('<tr>');
             var newCol = $('<td>');
+            // Create upvote+downvote arrows
+            var upVote = $('<i class="upvote fas fa-chevron-up"></i>');
+            var downVote = $('<i class="downvote fas fa-chevron-down"></i>');
+            var arrows = $('<div class="votes">');
+            arrows.append(upVote);
+            arrows.append(downVote);
             newCol.append(question);
             newRow.append(newCol);
+            newCol.prepend(arrows);
             $('#tba-container').append(newRow);
         };
 

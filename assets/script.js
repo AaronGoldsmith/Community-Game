@@ -1,3 +1,16 @@
+var config = {
+    apiKey: "AIzaSyAH20Zs8h38Z36SewkTWnVHLO3t7DsSG3g",
+    authDomain: "community-survey-c406d.firebaseapp.com",
+    databaseURL: "https://community-survey-c406d.firebaseio.com",
+    projectId: "community-survey-c406d",
+    storageBucket: "community-survey-c406d.appspot.com",
+    messagingSenderId: "765662643308"
+};
+
+firebase.initializeApp(config);
+var db = firebase.database();
+var ui = new firebaseui.auth.AuthUI(firebase.auth());
+var dbRef = db.ref();
 var uiConfig = {
     callbacks: {
         signInSuccessWithAuthResult: function(authResult, redirectUrl) {
@@ -17,25 +30,25 @@ var uiConfig = {
                     firebase.auth.GoogleAuthProvider.PROVIDER_ID,
                     firebase.auth.FacebookAuthProvider.PROVIDER_ID],
   };
-var config = {
-    apiKey: "AIzaSyAH20Zs8h38Z36SewkTWnVHLO3t7DsSG3g",
-    authDomain: "community-survey-c406d.firebaseapp.com",
-    databaseURL: "https://community-survey-c406d.firebaseio.com",
-    projectId: "community-survey-c406d",
-    storageBucket: "community-survey-c406d.appspot.com",
-    messagingSenderId: "765662643308"
-};
-firebase.initializeApp(config);
 
 $(document).ready(function(){
-    var ui = new firebaseui.auth.AuthUI(firebase.auth());
     
     $("#login").on("click",function(){
       ui.start('#firebaseui-auth-container', uiConfig);
       console.log($("#firebaseui-auth-container").child());
     })
+
+    // everytime page loads
+    dbRef.on("child_added", function(snapshot) {
+        console.log(snapshot)
+        dbRef.push({
+            name: "test",
+            email: "test@test.com",
+            age: "20",
+            comment: "Lorem Ipsum Dorem lipsum",
+          });
+    });
+
 });
-
-
 
 

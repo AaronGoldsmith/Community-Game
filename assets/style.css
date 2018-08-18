@@ -44,3 +44,6 @@ form {
 .tba-card {
     margin-top: 64px;
 }
+.guest-text{
+    visibility:visible;
+}

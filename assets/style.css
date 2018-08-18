@@ -27,7 +27,6 @@ body,html{
     border-left: none;
     border-right: none;
 }
-
 #question-input:focus {
     box-shadow: none;
     background: #a6c1ed;

@@ -11,6 +11,24 @@
         <link rel = "stylesheet" href="assets/style.css" type="text/css">
         <!-- Added fontawesome for arrow icons -->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+        <!-- Link firebase / firebaseUI -->
+ 
+        <script src="https://www.gstatic.com/firebasejs/5.4.0/firebase.js"></script>
+        <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyAH20Zs8h38Z36SewkTWnVHLO3t7DsSG3g",
+            authDomain: "community-survey-c406d.firebaseapp.com",
+            databaseURL: "https://community-survey-c406d.firebaseio.com",
+            projectId: "community-survey-c406d",
+            storageBucket: "community-survey-c406d.appspot.com",
+            messagingSenderId: "765662643308"
+        };
+        firebase.initializeApp(config);
+        </script>
+        
+        <script src="https://cdn.firebase.com/libs/firebaseui/3.3.0/firebaseui.js"></script>
+        <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.3.0/firebaseui.css" />
         <!-- link jquery and javascript files -->
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>           
         <script src="assets/script.js"></script>
@@ -24,6 +42,26 @@
         <div class="jumbotron jumbotron-fluid">
             <h1 class="display-6 text-center">Community Survey </h1>
         </div>
+        <!-- Modal -->
+    <div class="modal fade" id="modalContainer" tabindex="-1" role="dialog" aria-labelledby="login-modal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Sign in</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End of modal block -->
 
         <div class="container">
             <div class="row ask-box justify-content-center">
@@ -47,6 +85,7 @@
                     </div>
                 </div>
 
+
             <div class="card tba-card">
                 <div class="card-body">
                     <h5 class="card-title">vote for upcoming questions</h5>
@@ -58,10 +97,12 @@
 
         </div>
 
-        <script src="assets/questions.js"></script>
+    <script src="assets/questions.js"></script>
+    <!-- SCRIPTS FOR BOOTSTRAP -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+   
+   
     </body>
-
-
-
-
 </html>

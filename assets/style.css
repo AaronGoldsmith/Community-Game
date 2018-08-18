@@ -41,9 +41,24 @@ form {
     margin-bottom: 0;
 }
 
+#sketch-box {
+    height: 30px;
+}
+
 .tba-card {
     margin-top: 64px;
 }
 .guest-text{
     visibility:visible;
+}
+
+.votes {
+    width: 15px;
+    float: left;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.fas:hover {
+    text-shadow: 0 1px 1px black;
 }

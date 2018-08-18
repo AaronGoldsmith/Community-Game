@@ -19,21 +19,30 @@ $(document).ready(function(){
         signInSuccessUrl: 'index.html',
         signInOptions:  [firebase.auth.EmailAuthProvider.PROVIDER_ID, 
                         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-                        firebase.auth.FacebookAuthProvider.PROVIDER_ID],
+                        firebase.auth.FacebookAuthProvider.PROVIDER_ID]
     };
 
 
+  //   $('#modalContainer').on('show.bs.modal', function (e) {
+     
+  // })
+  
     // creates the login container
     $("#login").on("click",function()
     {
+      var b4ui = $("<div>").attr("id","firebaseui-auth-container")
+      $(".modal").modal("toggle")
+      $(".modal-body").append(b4ui)
       var ui = new firebaseui.auth.AuthUI(firebase.auth());
       ui.start('#firebaseui-auth-container', {
+        
         signInFlow: 'popup',
         signInSuccessUrl: '../index.html',
         signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID, 
                         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
                         firebase.auth.FacebookAuthProvider.PROVIDER_ID]
       });
+       console.log($("#modalContainer"))
     })
 
     // everytime page loads or value changes

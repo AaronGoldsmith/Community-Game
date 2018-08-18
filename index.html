@@ -10,30 +10,22 @@
         crossorigin="anonymous">
 
        
+        <!-- firebase ui script  -->
+        <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.3.0/firebaseui.css" />  
+        <link type="text/css" rel="stylesheet" href="assets/style.css" >
 
-        <link rel = "stylesheet" href="assets/style.css" type="text/css">
+         <!-- Firebase App is always required and must be first -->
+        <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-app.js"></script>
         <!-- Link firebase / firebaseUI -->
- 
         <script src="https://www.gstatic.com/firebasejs/5.4.0/firebase.js"></script>
-        <script>
-        // Initialize Firebase
-        var config = {
-            apiKey: "AIzaSyAH20Zs8h38Z36SewkTWnVHLO3t7DsSG3g",
-            authDomain: "community-survey-c406d.firebaseapp.com",
-            databaseURL: "https://community-survey-c406d.firebaseio.com",
-            projectId: "community-survey-c406d",
-            storageBucket: "community-survey-c406d.appspot.com",
-            messagingSenderId: "765662643308"
-        };
-        firebase.initializeApp(config);
-        </script>
         
+       
+        <!-- Add additional services that you want to use -->
+        <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-auth.js"></script>
         <script src="https://cdn.firebase.com/libs/firebaseui/3.3.0/firebaseui.js"></script>
-        <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.3.0/firebaseui.css" />
-        <!-- link jquery and javascript files -->
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>           
-        <script src="assets/script.js"></script>
-        <script src="assets/author.js"></script>
+        
+
+       
 
     </head>
 
@@ -43,7 +35,7 @@
         </div>
         <!-- Modal -->
     <div class="modal fade" id="modalContainer" tabindex="-1" role="dialog" aria-labelledby="login-modal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLongTitle">Sign in</h5>
@@ -55,7 +47,6 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
             </div>
           </div>
         </div>
@@ -71,7 +62,7 @@
                             <button type="submit" class="btn btn-outline-secondary" id="submit">Submit</button> 
                         </div>
                     </form>
-                    <small class="form-text text-muted"><a id="login" data-toggle="modal" data-target="modalContainer" href="#">Sign in</a> to start asking questions.</small>
+                    <small class="form-text text-muted guest-text" data-state="hidden"><a id="login" data-toggle="modal" data-target="modalContainer" href="#">Sign in</a> to start asking questions.</small>
                 </div>
             </div>
 
@@ -94,7 +85,24 @@
                 </div>
             </div>
         </div>
-
+        <script>
+            // Initialize Firebase
+            var config = {
+                apiKey: "AIzaSyAH20Zs8h38Z36SewkTWnVHLO3t7DsSG3g",
+                authDomain: "community-survey-c406d.firebaseapp.com",
+                databaseURL: "https://community-survey-c406d.firebaseio.com",
+                projectId: "community-survey-c406d",
+                storageBucket: "community-survey-c406d.appspot.com",
+                messagingSenderId: "765662643308"
+            };
+            firebase.initializeApp(config);
+    
+            </script>
+            
+            <!-- link jquery and javascript files -->
+            <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>           
+            <script src="assets/script.js"></script>
+            <script src="assets/author.js"></script>
         <script>
         // Just demo script for testing. We don't want js here.
 
@@ -114,6 +122,9 @@
 
             addQuestion();
             $('#question-input').val('');
+            if(firebase.auth().currentUser){
+                console.log("you are signed in")
+            }
         });
 
         

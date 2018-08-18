@@ -12,12 +12,24 @@
        
 
         <link rel = "stylesheet" href="assets/style.css" type="text/css">
-        <link type="text/css" rel="stylesheet" href="node_modules/firebaseui/dist/firebaseui.css" />
-
         <!-- Link firebase / firebaseUI -->
+ 
         <script src="https://www.gstatic.com/firebasejs/5.4.0/firebase.js"></script>
-        <script src="node_modules/firebaseui/dist/firebaseui.js">
-        </script>                  
+        <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyAH20Zs8h38Z36SewkTWnVHLO3t7DsSG3g",
+            authDomain: "community-survey-c406d.firebaseapp.com",
+            databaseURL: "https://community-survey-c406d.firebaseio.com",
+            projectId: "community-survey-c406d",
+            storageBucket: "community-survey-c406d.appspot.com",
+            messagingSenderId: "765662643308"
+        };
+        firebase.initializeApp(config);
+        </script>
+        
+        <script src="https://cdn.firebase.com/libs/firebaseui/3.3.0/firebaseui.js"></script>
+        <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.3.0/firebaseui.css" />
         <!-- link jquery and javascript files -->
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>           
         <script src="assets/script.js"></script>
@@ -29,7 +41,25 @@
         <div class="jumbotron jumbotron-fluid">
             <h1 class="display-6 text-center">Community Survey</h1>
         </div>
-
+        <!-- Modal -->
+    <div class="modal fade" id="modalContainer" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id="firebaseui-auth-container">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
         <div class="container">
             <div class="row ask-box justify-content-center">
                 <div class="col-md-6 text-center">
@@ -39,7 +69,7 @@
                             <button type="submit" class="btn btn-outline-secondary" id="submit">Submit</button> 
                         </div>
                     </form>
-                    <small id="login" class="form-text text-muted"><a href="#">Log in</a> to start asking questions.</small>
+                    <small class="form-text text-muted"><a id="login" href="#">Log in</a> to start asking questions.</small>
                 </div>
             </div>
 
@@ -51,7 +81,7 @@
                         </div>
                     </div>
                 </div>
-
+                <div id="firebaseui-auth-container"></div>
             <div class="card tba-card">
                 <div class="card-body">
                     <h5 class="card-title">vote for upcoming questions</h5>

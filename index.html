@@ -34,7 +34,7 @@
                             <button type="submit" class="btn btn-outline-secondary" id="submit">Submit</button> 
                         </div>
                     </form>
-                    <small id="login" class="form-text text-muted"><a href="#">Log in</a> to start asking questions.</small>
+                    <small class="form-text text-muted"><a id="login" data-toggle="modal" data-target="modalContainer" href="#">Sign in</a> to start asking questions.</small>
                 </div>
             </div>
 
@@ -58,36 +58,7 @@
 
         </div>
 
-        <script>
-        // Just demo script for testing. We don't want js here.
-
-        var question = '';
-
-        function addQuestion() {
-            // Create single row+column for new question
-            var newRow = $('<tr>');
-            var newCol = $('<td>');
-            // Create upvote+downvote arrows
-            var upVote = $('<i class="upvote fas fa-chevron-up"></i>');
-            var downVote = $('<i class="downvote fas fa-chevron-down"></i>');
-            var arrows = $('<div class="votes">');
-            arrows.append(upVote);
-            arrows.append(downVote);
-            newCol.append(question);
-            newRow.append(newCol);
-            newCol.prepend(arrows);
-            $('#tba-container').append(newRow);
-        };
-
-        $('#submit').on('click', function() {
-            event.preventDefault();
-            question = $('#question-input').val().trim();
-
-            addQuestion();
-            $('#question-input').val('');
-        });
-        
-        </script>
+        <script src="assets/questions.js"></script>
     </body>
 
 

@@ -1,6 +1,6 @@
 var db = firebase.database();
 
-$('#modalContainer').modal("show")                      // initialized with defaults
+// initialized with defaults
 
 $(document).ready(function(){
 
@@ -17,12 +17,13 @@ $(document).ready(function(){
         // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
         signInFlow: 'popup',
         signInSuccessUrl: 'index.html',
-        signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID, 
+        signInOptions:  [firebase.auth.EmailAuthProvider.PROVIDER_ID, 
                         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
                         firebase.auth.FacebookAuthProvider.PROVIDER_ID],
     };
 
 
+    // creates the login container
     $("#login").on("click",function()
     {
       var ui = new firebaseui.auth.AuthUI(firebase.auth());
@@ -38,8 +39,8 @@ $(document).ready(function(){
     // everytime page loads or value changes
       db.ref().on("value", function(snapshot) {
         db.ref().set({
-            name: "test",
-            email: "test@test.com",
+            name: "Administrator",
+            email: "aargoldsmith@gmail.com",
             age: "20",
             comment: "Lorem Ipsum Dorem lipsum",
           });

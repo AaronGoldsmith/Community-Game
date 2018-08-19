@@ -22,4 +22,8 @@ $('#submit').on('click', function() {
 
     addQuestion();
     $('#question-input').val('');
+    // debugging 
+    if(firebase.auth().currentUser){
+        console.log("you are signed in")
+    }
 });

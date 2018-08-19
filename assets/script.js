@@ -9,6 +9,9 @@ function setPersistence(){
 }
 // initialized with defaults
 $(document).ready(function(){
+    if(firebase.auth().currentUser){
+      $(".guest-text").css("visibility","hidden!important")
+    }
    var db = firebase.database()
    var uiConfig = {
         callbacks: {
@@ -52,6 +55,7 @@ $(document).ready(function(){
     //         comment: "Lorem Ipsum Dorem lipsum",
     //       });
     // });
+
 
 });
 

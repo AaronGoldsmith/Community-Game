@@ -49,7 +49,7 @@ form {
     margin-top: 64px;
 }
 .guest-text{
-    visibility:visible;
+    visibility:hidden;
 }
 
 .votes {

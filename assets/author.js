@@ -21,7 +21,10 @@
 //     }
 //   });
   
-
+if(firebase.auth().currentUser){
+  $(".guest-text").child().addClass("hidden")
+// $(".guest-text").css("visibility","hidden!important")
+}
   /**
    * Sends an email verification to the user.
    */
@@ -72,6 +75,7 @@
         
         if (!emailVerified) {
           document.getElementById('quickstart-verify-email').disabled = false;
+        
         }
         // [END_EXCLUDE]
       } else {

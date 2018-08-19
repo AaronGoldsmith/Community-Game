@@ -90,49 +90,24 @@
                 </div>
             </div>
         </div>
-        <script>
-            // Initialize Firebase
-            var config = {
-                apiKey: "AIzaSyAH20Zs8h38Z36SewkTWnVHLO3t7DsSG3g",
-                authDomain: "community-survey-c406d.firebaseapp.com",
-                databaseURL: "https://community-survey-c406d.firebaseio.com",
-                projectId: "community-survey-c406d",
-                storageBucket: "community-survey-c406d.appspot.com",
-                messagingSenderId: "765662643308"
-            };
-            firebase.initializeApp(config);
-    
-            </script>
-            
-            <!-- link jquery and javascript files -->
-            <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>           
-            <script src="assets/script.js"></script>
-            <script src="assets/author.js"></script>
-        <script>
-        // Just demo script for testing. We don't want js here.
-
-        var question = '';
-
-        function addQuestion() {
-            var newRow = $('<tr>');
-            var newCol = $('<td>');
-            newCol.append(question);
-            newRow.append(newCol);
-            $('#tba-container').append(newRow);
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyAH20Zs8h38Z36SewkTWnVHLO3t7DsSG3g",
+            authDomain: "community-survey-c406d.firebaseapp.com",
+            databaseURL: "https://community-survey-c406d.firebaseio.com",
+            projectId: "community-survey-c406d",
+            storageBucket: "community-survey-c406d.appspot.com",
+            messagingSenderId: "765662643308"
         };
+        firebase.initializeApp(config);
 
-        $('#submit').on('click', function() {
-            event.preventDefault();
-            question = $('#question-input').val().trim();
-
-            addQuestion();
-            $('#question-input').val('');
-             // debugging 
-            if(firebase.auth().currentUser){
-                console.log("you are signed in")
-            }
-        });
-        </script>
+    </script>
+            
+    <!-- link jquery and javascript files -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>           
+    <script src="assets/script.js"></script>
+    <script src="assets/author.js"></script>
 
     <script src="assets/questions.js"></script>
     <!-- SCRIPTS FOR BOOTSTRAP -->

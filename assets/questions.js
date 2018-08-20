@@ -2,7 +2,10 @@
 var question = '';
 
 // Temporary question array for testing - this should be done firebase-side
-var questionsArray = [];
+var questionsArray = [
+    {q: 'Is this an example question?', up: 0, down: 0 },
+    {q: 'Is this the second example question?', up: 0, down: 0 }
+];
 
 // FUNCTIONS
 
@@ -21,7 +24,9 @@ function addQuestion() {
 
         // Create upvote+downvote arrows
         var up = $('<i class="upvote fas fa-chevron-up"></i>');
-        var down = $('<i class="downvote fas fa-chevron-down"></i>');     
+        up.attr('data-vote', 'none');
+        var down = $('<i class="downvote fas fa-chevron-down"></i>');
+        down.attr('data-vote', 'none');
         var arrows = $('<div class="votes">');
 
         // Arrow IDs based on the index number
@@ -47,8 +52,7 @@ function addQuestion() {
 
 function updateVote(index) {
     $(`#rating-${index}`).text(questionsArray[index].up - questionsArray[index].down);
-    // We'll want to obtain the "up" and "down" values from the database.
-    // I think it's best to just do the math locally, though
+   
 };
 
 // EVENTS
@@ -62,13 +66,35 @@ function updateVote(index) {
 //     addQuestion();
 // });
 
-// upvote and downvote need to check database to see whether the user has voted on the question already
-
+// User upvotes a question
 $(document).on('click', `.upvote`, function() {
+    // Index to use for local array for testing
     var index = (this.id).split('-').slice(-1);
+    
+    
+    var upElem = $(`#up-${index}`);
+    var downElem = $(`#down-${index}`);
 
-    // Temporary local array for testing
-    questionsArray[index].up++;
+    var upState = upElem.attr('data-vote');
+    var downState = downElem.attr('data-vote');
+
+    if (upState === 'none' && downState === 'none') {
+        upElem.attr('data-vote', 'upvoted');
+
+        questionsArray[index].up++;
+    }
+    else if (upState === 'upvoted') {
+        console.log('You already upvoted.');
+        return false;
+    }
+    else if (downState === 'downvoted') {
+        console.log('You changed your vote.');
+        upElem.attr('data-vote', 'upvoted');
+        downElem.attr('data-vote', 'none');
+        
+        questionsArray[index].up++;
+        questionsArray[index].down--;
+    }    
 
     // firebase - not sure how this works with selecting the specific question
     // upVotes++;
@@ -80,11 +106,34 @@ $(document).on('click', `.upvote`, function() {
     console.log(`#${this.id} Upvoted!`);
 });
 
+// User downvotes a question
 $(document).on('click', `.downvote`, function() {
+    // Index to use for local array for testing
     var index = (this.id).split('-').slice(-1);
 
-    // Temporary local array for testing
-    questionsArray[index].down++;
+    var upElem = $(`#up-${index}`);
+    var downElem = $(`#down-${index}`);
+
+    var upState = upElem.attr('data-vote');
+    var downState = downElem.attr('data-vote');
+
+    if (upState === 'none' && downState === 'none') {
+        upElem.attr('data-vote', 'upvoted');
+
+        questionsArray[index].down++;
+    }
+    else if (downState === 'downvoted') {
+        console.log('You already downvoted.');
+        return false;
+    }
+    else if (upState === 'upvoted') {
+        console.log('You changed your vote.');
+        upElem.attr('data-vote', 'none');
+        downElem.attr('data-vote', 'downvoted');
+        
+        questionsArray[index].up--;
+        questionsArray[index].down++;
+    }
 
     // firebase - not sure how this works with selecting the specific question
     // downVotes++
@@ -96,6 +145,7 @@ $(document).on('click', `.downvote`, function() {
     console.log(`#${this.id} Downvoted!`);
 });
 
+// User submits a question
 $('#submit').on('click', function() {
     event.preventDefault();
     var question = $('#question-input').val().trim();
@@ -121,3 +171,6 @@ $('#submit').on('click', function() {
         console.log("you are signed in")
     }
 });
+
+// Updating the DOM with the sample questions from the array
+addQuestion(); 

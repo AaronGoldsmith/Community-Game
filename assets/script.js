@@ -80,16 +80,21 @@ $(document).ready(function(){
     // db.ref("/upcomingQs").set({
     //     questionsLeft: 0
     // })
-    // db.ref("/historical").set({
-    //   minSinceUpdate: 0 
-    // })
+   
     db.ref("/activeQ").set({
         timeLeft: 30
     })
 
     //  this function will return a question object
    
-
+    $(".choice").on("click",function(){
+      $(this).addClass("btn-success")
+    });
+    $(".choice").on("click",function(){
+      if($(this).hasClass("btn-success")){
+        removeClass("btn-primary")
+      } 
+    });
     function makeSampleQs(numQs){
       var questions = [];
       for(var i = 0;i<numQs;i++){
@@ -119,30 +124,6 @@ $(document).ready(function(){
 
 
 
-
-    // everytime page loads or value changes
-    //   db.ref().on("value", function(snapshot) {
-    //     db.ref().set({
-    //         name: "Administrator",
-    //         email: "example@gmail.com",
-    //         age: "20",
-    //         comment: "Lorem Ipsum Dorem lipsum",
-    //       });
-    // });
-
-
-
-
-// function setPersistence(){
-//   firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(function() {
-//           return firebase.auth().signInWithEmailAndPassword(email, password);
-//   }).catch(function(error) {
-//       var errorCode = error.code;
-//       var errorMessage = error.message;
-//       console.log(errorCode + ": " +errorMessage)
-//   });
-// }
-// 
 
 
 

@@ -69,3 +69,20 @@ form {
 .fas:hover {
     text-shadow: 0 1px 1px black;
 }
+
+button#timer {
+    position: relative;
+    width: 100%;
+}
+#timer_container{
+    background: #333;
+  }
+i.fa-pause {
+    font-size: 7em;
+    position: absolute;
+    visibility: hidden;
+    left: 40px;
+    top: 30px;
+    opacity: 0.8;
+}
+  

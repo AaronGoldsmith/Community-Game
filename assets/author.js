@@ -72,6 +72,7 @@
         
         if (!emailVerified) {
           document.getElementById('quickstart-verify-email').disabled = false;
+        
         }
         // [END_EXCLUDE]
       } else {

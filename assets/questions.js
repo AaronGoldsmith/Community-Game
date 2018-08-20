@@ -121,3 +121,19 @@ $('#submit').on('click', function() {
         console.log("you are signed in")
     }
 });
+
+function formatCMV( redditTitle ){  
+    if(redditTitle.substring(0,4) === "CMV:"){ 
+        var questionPart = redditTitle.substring(4,redditTitle.length)
+        return "Do you think " + questionPart;
+    }
+    return false;
+ }
+
+function formatDAE( redditTitle ){  
+    if(redditTitle.substring(0,3) === "DAE"){ 
+        var questionPart = redditTitle.substring(3,redditTitle.length)
+        return "Do you " + questionPart;
+    }
+    return false;
+ }

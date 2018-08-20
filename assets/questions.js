@@ -30,6 +30,7 @@ function addQuestion() {
         tempID = i; 
         up.attr('id', `up-${tempID}`);
         down.attr('id', `down-${tempID}`);
+        rating.attr('id', `rating-${tempID}`);
 
         // Append things
         arrows.append(up);
@@ -42,6 +43,13 @@ function addQuestion() {
         $('#tba-container').append(newRow);
     }
 };
+
+
+function updateVote() {
+    for (var i = 0; i < questionsArray.length; i++) {
+        $(`#rating-${i}`).text(questionsArray[i].up - questionsArray[i].down)
+    }
+}
 
 // EVENTS
 
@@ -66,7 +74,8 @@ $(document).on('click', `.upvote`, function() {
     //     up: upVotes
     // })
     
-    addQuestion();
+    // addQuestion();
+    updateVote();
     console.log(`#${this.id} Upvoted!`);
 });
 
@@ -82,7 +91,8 @@ $(document).on('click', `.downvote`, function() {
     //     down: downVotes
     // })
     
-    addQuestion();
+    // addQuestion();
+    updateVote();
     console.log(`#${this.id} Downvoted!`);
 });
 

@@ -45,11 +45,11 @@ function addQuestion() {
 };
 
 
-function updateVote() {
-    for (var i = 0; i < questionsArray.length; i++) {
-        $(`#rating-${i}`).text(questionsArray[i].up - questionsArray[i].down)
-    }
-}
+function updateVote(index) {
+    $(`#rating-${index}`).text(questionsArray[index].up - questionsArray[index].down);
+    // We'll want to obtain the "up" and "down" values from the database.
+    // I think it's best to just do the math locally, though
+};
 
 // EVENTS
 
@@ -62,6 +62,8 @@ function updateVote() {
 //     addQuestion();
 // });
 
+// upvote and downvote need to check database to see whether the user has voted on the question already
+
 $(document).on('click', `.upvote`, function() {
     var index = (this.id).split('-').slice(-1);
 
@@ -73,9 +75,8 @@ $(document).on('click', `.upvote`, function() {
     // db.ref().set({
     //     up: upVotes
     // })
-    
-    // addQuestion();
-    updateVote();
+
+    updateVote(index);
     console.log(`#${this.id} Upvoted!`);
 });
 
@@ -91,8 +92,7 @@ $(document).on('click', `.downvote`, function() {
     //     down: downVotes
     // })
     
-    // addQuestion();
-    updateVote();
+    updateVote(index);
     console.log(`#${this.id} Downvoted!`);
 });
 

@@ -4,33 +4,36 @@
         <title>Community Survey</title>
         <meta charset="UTF-8"/>
 
-        <!-- link bootstrap and stylesheet -->
+    <!-- RESET --> 
+        <link type="text/css" rel="stylesheet" href="assets/reset.css" >
+    <!-- BOOSTRAP CDN  -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" 
         integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
         crossorigin="anonymous">
-       
-        <!-- firebase ui script  -->
-        <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.3.0/firebaseui.css" />  
-        <link type="text/css" rel="stylesheet" href="assets/style.css" >
-
-         <!-- Firebase App is always required and must be the first firebase script -->
+               
+    <!-- FIREBASE-APP.js -->
+        <!-- this script is required, and must be the first firebase script -->
         <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-app.js"></script>
-        <link rel = "stylesheet" href="assets/style.css" type="text/css">
-        <!-- Added fontawesome for arrow icons -->
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
-        <!-- Link firebase / firebaseUI -->
+
+     <!-- custom CSS -->
+        <link type="text/css" rel="stylesheet" href="assets/style.css" >
         
-        <!-- Add additional services that you want to use -->
+    <!-- link external libraries (FA, firebaseUI, jquery)-->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+        <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.3.0/firebaseui.css" />
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>           
+
+        <!-- p5.js -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/p5.js"></script>
+        <script src="assets/sketch.js"></script>
+
+
+    <!-- Add additional firebase services that you want to use -->
         <script src="https://www.gstatic.com/firebasejs/5.4.0/firebase-auth.js"></script>
         <script src="https://cdn.firebase.com/libs/firebaseui/3.3.0/firebaseui.js"></script>
         
-        <!-- THIS SCRIPT NEEDS TO BE LAST -->
         <script src="https://www.gstatic.com/firebasejs/5.4.0/firebase.js"></script>
-        <!-- LAST SCRIPT IN HEAD -->
-        <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.3.0/firebaseui.css" />
-        <!-- link jquery and javascript files -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/p5.js"></script>
-        <script src="assets/sketch.js"></script>
+        <!--------------------^----- LAST SCRIPT IN HEAD - ^------------------- -->
 
     </head>
 
@@ -105,34 +108,7 @@
             </script>
             
             <!-- link jquery and javascript files -->
-            <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>           
-            <script src="assets/script.js"></script>
-            <script src="assets/author.js"></script>
-        <script>
-        // Just demo script for testing. We don't want js here.
-
-        var question = '';
-
-        function addQuestion() {
-            var newRow = $('<tr>');
-            var newCol = $('<td>');
-            newCol.append(question);
-            newRow.append(newCol);
-            $('#tba-container').append(newRow);
-        };
-
-        $('#submit').on('click', function() {
-            event.preventDefault();
-            question = $('#question-input').val().trim();
-
-            addQuestion();
-            $('#question-input').val('');
-             // debugging 
-            if(firebase.auth().currentUser){
-                console.log("you are signed in")
-            }
-        });
-        </script>
+    <script src="assets/script.js"></script>
 
     <script src="assets/questions.js"></script>
     <!-- SCRIPTS FOR BOOTSTRAP -->

@@ -118,7 +118,7 @@ $(document).on('click', `.downvote`, function() {
     var downState = downElem.attr('data-vote');
 
     if (upState === 'none' && downState === 'none') {
-        upElem.attr('data-vote', 'upvoted');
+        downElem.attr('data-vote', 'downvoted');
 
         questionsArray[index].down++;
     }

@@ -1,29 +1,24 @@
-// function setPersistence(){
-//   firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(function() {
-//           return firebase.auth().signInWithEmailAndPassword(email, password);
-//   }).catch(function(error) {
-//       var errorCode = error.code;
-//       var errorMessage = error.message;
-//       console.log(errorCode + ": " +errorMessage)
-//   });
-// }
-// 
+
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
-      // User is signed in.
+
+/*       User is signed in.
+ */      
       var displayName = user.displayName;
       var email = user.email;
       // var emailVerified = user.emailVerified;
       // var isAnonymous = user.isAnonymous;
       // var uid = user.uid;
       // var providerData = user.providerData;
-      firebase.database().ref("/users").set({
-        user: displayName,
-        email: email
+
+   firebase.database().ref("/users").set({
+          user: displayName,
+          email: email
       })
-      console.log("you signed in")
+      console.log(displayName + ", you successfully signed in")
     } else {
-      $('.guest-text').css("visibility","visible")
+      // not signed in
+      $(".guest-text").addClass("visible")
     }
   });
   
@@ -32,14 +27,12 @@ var uiConfig = {
   callbacks: {
       signInSuccessWithAuthResult: function(authResult, redirectUrl) {
       // User successfully signed in.
-      // $(".guest-text").css("visibility","hidden")
       // setPersistence()
       console.log("login success")
       return true;
       },
       uiShown: function() {
-        console.log('load')
-        // document.getElementById('loader').style.display = 'none';
+        console.log('Please login, guest')
       }
   },
   // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
@@ -83,6 +76,17 @@ $(document).ready(function(){
 
 
 });
+
+// function setPersistence(){
+//   firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(function() {
+//           return firebase.auth().signInWithEmailAndPassword(email, password);
+//   }).catch(function(error) {
+//       var errorCode = error.code;
+//       var errorMessage = error.message;
+//       console.log(errorCode + ": " +errorMessage)
+//   });
+// }
+// 
 
 
 

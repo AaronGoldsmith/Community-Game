@@ -47,25 +47,28 @@ var timer = {
 };
 
 // FUNCTIONS
-// This is breaking ratings when the questions are redone
-// Need to divide it up     
+ 
 function addQuestion() {
     $('#tba-container').empty();
 
     for (var i = 0; i < questionsArray.length; i++) {
         // Create single row+column for new question
         var newRow = $('<tr>');
-        var newCol = $('<td>');
-        var newQ = $('<div class="question">');
+        // var newCol = $('<td>');
+        // var newQ = $('<div class="question">');
+        var rateCol = $('<td class="rating">');
+        var voteCol = $('<td class="votes">');
+        var questCol = $('<td class="question">');
 
         // Rating variables
-        var rating = $('<div class="rating">');
-        rating.text(questionsArray[i].up - questionsArray[i].down);
+        // var rating = $('<div class="rating">');
+        // rating.text(questionsArray[i].up - questionsArray[i].down);
+        rateCol.text(questionsArray[i].up - questionsArray[i].down);
 
         // Create upvote+downvote arrows
         var up = $('<i class="upvote fas fa-chevron-up"></i>');
         var down = $('<i class="downvote fas fa-chevron-down"></i>');
-        var arrows = $('<div class="votes">');
+        // var arrows = $('<div class="votes">');
 
         if (questionsArray[i].upvoted) {
             up.attr('data-vote', 'upvoted');
@@ -86,16 +89,23 @@ function addQuestion() {
         tempID = i; 
         up.attr('id', `up-${tempID}`);
         down.attr('id', `down-${tempID}`);
-        rating.attr('id', `rating-${tempID}`);
+        // rating.attr('id', `rating-${tempID}`);
+        rateCol.attr('id', `rating-${tempID}`);
 
         // Append things
-        arrows.append(up);
-        arrows.append(down);
-        newQ.append(questionsArray[i].q);
-        newCol.append(newQ);
-        newRow.append(newCol);
-        newCol.prepend(arrows);
-        newCol.prepend(rating);
+        // arrows.append(up);
+        // arrows.append(down);
+        voteCol.append(up);
+        voteCol.append(down);
+        // newQ.append(questionsArray[i].q);
+        questCol.append(questionsArray[i].q);
+        // newCol.append(newQ);
+        // newRow.append(newCol);
+        newRow.append(rateCol);
+        newRow.append(voteCol);
+        newRow.append(questCol);
+        // newCol.prepend(arrows);
+        // newCol.prepend(rating);
         $('#tba-container').append(newRow);
     }
 };
@@ -116,6 +126,7 @@ function loadQuestion() {
     // setTimeout(function(){ next(); }, 1500);
 };
 
+// Restarts the game and shows p5 + buttons if it sees a question
 function checkQuestions() {
     if (!timerActive && questionsArray.length > 0) {
         next();
@@ -124,7 +135,8 @@ function checkQuestions() {
     }
 };
 
-// not clear what this function does
+// Gets next question and restarts timer if there's another  question
+// Hides the p5 and buttons if there's no question
 function next() {
     timer.reset();
 
@@ -133,12 +145,10 @@ function next() {
         active.push(questionsArray.shift());
         addQuestion();
         $('#active').text(active[0].q);
-        // timer.reset();
         timer.start();
     }
     else {
         $('#active').empty();
-        // timer.reset();
         timer.stop();
         $('#sketch-box').hide();
         $('.game-buttons').hide();

@@ -5,12 +5,15 @@ body,html{
     margin: 0;
     padding: 0;
     height: 100%;
-    background: #e5efff;
+    /* background: #e5efff; */
+    background: #183a66;
+    color: #fff;
 }
 
 .jumbotron {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    background: #003165;
 }
 
 .card, .btn {
@@ -20,12 +23,20 @@ body,html{
 .ask-box {
     margin-bottom: 32px
 }
+
 #question-input {
     background: transparent;
     border-top: none;
     border-left: none;
     border-right: none;
+    border-bottom: 1px solid #0e86ca;
+    border-radius: 0;
 }
+
+#question-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
 #question-input:focus {
     box-shadow: none;
     background: #a6c1ed;
@@ -36,13 +47,49 @@ body,html{
     color: #fff; 
 }
 
+#submit {
+    background: transparent;
+    color: #fff;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: 1px solid #0e86ca;
+}
+
+#submit:hover {
+    background: #00aeff;
+    transition: color .2s;
+}
+
+#submit:focus {
+    box-shadow: none;
+}
+
+#submit:active {
+    background: #55c4f8;
+}
+
+.guest-text {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+a {
+    color: #00aeff;
+}
+
+a:hover {
+    text-decoration: none;
+    color: #fff;
+}
+
 form {
     margin-bottom: 0;
 }
 
 .active-question {
     height: 180px;
-    overflow: auto;
+    background: #003165;
+    box-shadow: 0 1px 2px rgba(0,0,0,.6);
 }
 
 #active {
@@ -60,6 +107,7 @@ form {
 #agree, #disagree {
     width: 90px;
     border: none;
+    background: #00aeff;
 }
 
 #agree:hover {
@@ -75,7 +123,17 @@ form {
 }
 
 .tba-card {
-    margin-top: 64px;
+    margin-top: 32px;
+    background: #003165;
+    box-shadow: 0 1px 2px rgba(0,0,0,.6);
+}
+
+.card-title {
+    font-variant: small-caps;
+}
+
+.table td {
+    border-top: 1px solid #0e86ca;
 }
 
 .guest-text{
@@ -83,21 +141,18 @@ form {
 }
 
 .rating {
-    float: left;
-    padding-top: 5px;
     margin-right: 8px;
-    width: 25px;
+    width: 40px;
 }
 
 .votes {
     width: 15px;
-    float: left;
     cursor: pointer;
     margin-right: 10px;
 }
 
 .fas:hover {
-    text-shadow: 0 1px 1px black;
+    color: #0e86ca;
 }
 
 button#timer {
@@ -108,9 +163,40 @@ button#timer {
     background: #333;
   }
 .upvote, .downvote {
-    color: #aaacaf
+    color: #fff;
 }
 
 .upvote[data-vote="upvoted"], .downvote[data-vote="downvoted"] {
-    color: #000;
+    color: #00aeff;
 }
+
+.modal-content {
+    background: #183a66;
+    border-radius: 0;
+}
+
+.close {
+    color: #fff;
+    text-shadow: none;
+    opacity: 1;
+}
+
+.close:hover {
+    color: #00aeff !important;
+}
+
+/* .firebaseui-idp-button {
+    background: #00aeff !important;
+}
+
+.firebaseui-idp-google {
+    background: #fff !important;
+}
+
+.firebaseui-idp-button:hover {
+    background: #66ceff !important;
+}
+
+.firebaseui-idp-button:hover {
+    color: #fff !important;
+} */

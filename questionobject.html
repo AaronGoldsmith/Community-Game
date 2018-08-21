@@ -35,7 +35,7 @@ function formatDAE(redditTitle){
 
 // get reddit questions
 var tempArray = [];
-var DAEredditQs = function(){
+var DAEredditQs = function(numberYouWant,){
 
     var queryURL = "https://www.reddit.com/r/DoesAnybodyElse/top/.json?count=10";
 
@@ -46,7 +46,7 @@ var DAEredditQs = function(){
     //   console.log(response);
     //   console.log(response.data);
 
-        for(var i = 0; i < response.data.children.length; i++){
+        for(var i = 0; i < (response.data.children.length - response.data.children.length + numberYouWant + 1); i++){
             //gets a large chunk of data about a question
             var theData = response.data.children[i];
 

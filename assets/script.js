@@ -87,13 +87,28 @@ $(document).ready(function(){
 
     //  this function will return a question object
    
+   // a little flippy floppy magic
     $(".choice").on("click",function(){
-      $(this).addClass("btn-success")
-    });
-    $(".choice").on("click",function(){
+      // check which btn class we have, and remove it
       if($(this).hasClass("btn-success")){
-        removeClass("btn-primary")
+        $(this).removeClass("btn-success")
+      }
+      else if($(this).hasClass("btn-danger")){
+        $(this).removeClass("btn-danger");
       } 
+      else{
+        // check to see which button we clicked on
+        if($(this).attr("id")=="agree"){
+          $(this).addClass("btn-success")
+          $(this).siblings().removeClass("btn-danger")
+
+        }
+        else{
+          $(this).addClass("btn-danger")
+          $(this).siblings().removeClass("btn-success")
+
+        }
+      }
     });
     function makeSampleQs(numQs){
       var questions = [];

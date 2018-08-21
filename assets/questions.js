@@ -104,7 +104,18 @@ function addQuestion() {
 
 // This is a little unnecessary but adds delay after page load
 function loadQuestion() {
-    setTimeout(function(){ next(); }, 1500);
+    getRedditData("DoesAnybodyElse",2);
+
+    // qlist.forEach(function(jsonQ){
+    //     var questionObj = extractData(jsonQ)
+    //     console.log(questionObj);
+    //     db.ref("/upcomingQs").push(questionObj)
+    // });
+    // setTimeout(function(){
+    //     console.log(request);
+    //     fillUpcoming(request);
+    // },5000)
+    // setTimeout(function(){ next(); }, 1500);
 };
 
 function checkQuestions() {
@@ -115,6 +126,7 @@ function checkQuestions() {
     }
 };
 
+// not clear what this function does
 function next() {
     timer.reset();
 
@@ -267,6 +279,10 @@ $(document).ready(loadQuestion);
 // Updating the DOM with the sample questions from the array
 addQuestion(); 
 
+
+
+//          ~~~ PARSE TITLES ~~~
+//
 function formatCMV( redditTitle ){  
     if(redditTitle.substring(0,4) === "CMV:"){ 
         var questionPart = redditTitle.substring(4,redditTitle.length)
@@ -282,3 +298,41 @@ function formatDAE( redditTitle ){
     }
     return false;
  }
+
+ // objects for ajax
+ function QuestionObject(q,up,down,aut,date){
+    let question = {
+        _question: q,
+        upvotes: up,        // agree
+        downvotes: down,    // disagree
+        author: aut,        // author or user
+        date: date          // date posted
+    }
+  return question;
+}
+function getRedditData(subreddit,maxQs){
+    var queryURL = "https://www.reddit.com/r/"+ subreddit +"/top/.json?count=10";
+    //gets a large chunk of data about a question
+    $.ajax({
+      url: queryURL,
+      data: {limit: maxQs, order: "desc"}, 
+      method: "GET"
+    }).then(function(response) {
+        return response.data;
+    });
+}
+
+// PRE: a json data object consisting 
+//      of a single question
+function extractData(Data){
+    var formattedTitle = formatDAE(Data.title);
+    var author = Data.author;
+    var id = Data.id;
+    var creation = Data.created_utc;
+    return QuestionObject(formattedTitle,0,0,author,creation);
+}
+function fillUpcoming(qlist){
+       
+}
+
+

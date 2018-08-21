@@ -10,6 +10,20 @@ function QuestionObject(q,up,down,aut,date){
   }
   return question;
 }
+function getRedditData(subreddit,maxQs){
+  var queryURL = "https://www.reddit.com/r/"+ subreddit +"/top/.json?count=10";
+  //gets a large chunk of data about a question
+  var questions = [];
+  $.ajax({
+    url: queryURL,
+    data: {limit: maxQs, order: "desc"}, 
+    method: "GET"
+  }).then(function(response) {
+      return response;
+  //   console.log(response);
+  //   console.log(response.data);
+  })
+}
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
 
@@ -22,10 +36,10 @@ firebase.auth().onAuthStateChanged(function(user) {
       // var uid = user.uid;
       // var providerData = user.providerData;
 
-   firebase.database().ref("/users").set({
+   firebase.database().ref("/users/"+email).set({
           user: displayName,
           email: email
-      })
+    })
       console.log(displayName + ", you successfully signed in")
     } else {
       // not signed in
@@ -76,15 +90,9 @@ $(document).ready(function(){
 
 
     //  This will replace the content 
- 
-    // db.ref("/upcomingQs").set({
-    //     questionsLeft: 0
-    // })
-   
-    db.ref("/activeQ").set({
-        timeLeft: 30
-    })
 
+   
+  
     //  this function will return a question object
    
    // a little flippy floppy magic

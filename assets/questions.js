@@ -317,7 +317,7 @@ function getRedditData(subreddit,maxQs){
                     author: aut,
                     created: date
                 }
-            firebase.database().ref("/historical/").set({ID: obj});
+            firebase.database().ref("/upcomingQs").push({obj});
 
             db.child(ID).on('value', function(snapshot){
                 console.log("checking for 'historical' questions")

@@ -52,7 +52,7 @@ $(document).ready(function(){
       if (user) {
         var displayName = user.displayName;
         var email = user.email;
-     db.ref("/users/"+email).set({
+     db.ref("/users/").push({
             user: displayName,
             email: email
       })

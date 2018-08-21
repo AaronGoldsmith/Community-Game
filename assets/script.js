@@ -80,16 +80,36 @@ $(document).ready(function(){
     // db.ref("/upcomingQs").set({
     //     questionsLeft: 0
     // })
-    // db.ref("/historical").set({
-    //   minSinceUpdate: 0 
-    // })
+   
     db.ref("/activeQ").set({
         timeLeft: 30
     })
 
     //  this function will return a question object
    
+   // a little flippy floppy magic
+    $(".choice").on("click",function(){
+      // check which btn class we have, and remove it
+      if($(this).hasClass("btn-success")){
+        $(this).removeClass("btn-success")
+      }
+      else if($(this).hasClass("btn-danger")){
+        $(this).removeClass("btn-danger");
+      } 
+      else{
+        // check to see which button we clicked on
+        if($(this).attr("id")=="agree"){
+          $(this).addClass("btn-success")
+          $(this).siblings().removeClass("btn-danger")
 
+        }
+        else{
+          $(this).addClass("btn-danger")
+          $(this).siblings().removeClass("btn-success")
+
+        }
+      }
+    });
     function makeSampleQs(numQs){
       var questions = [];
       for(var i = 0;i<numQs;i++){
@@ -119,30 +139,6 @@ $(document).ready(function(){
 
 
 
-
-    // everytime page loads or value changes
-    //   db.ref().on("value", function(snapshot) {
-    //     db.ref().set({
-    //         name: "Administrator",
-    //         email: "example@gmail.com",
-    //         age: "20",
-    //         comment: "Lorem Ipsum Dorem lipsum",
-    //       });
-    // });
-
-
-
-
-// function setPersistence(){
-//   firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(function() {
-//           return firebase.auth().signInWithEmailAndPassword(email, password);
-//   }).catch(function(error) {
-//       var errorCode = error.code;
-//       var errorMessage = error.message;
-//       console.log(errorCode + ": " +errorMessage)
-//   });
-// }
-// 
 
 
 

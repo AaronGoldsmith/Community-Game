@@ -20,7 +20,6 @@ body,html{
 .ask-box {
     margin-bottom: 32px
 }
-
 #question-input {
     background: transparent;
     border-top: none;
@@ -101,6 +100,13 @@ form {
     text-shadow: 0 1px 1px black;
 }
 
+button#timer {
+    position: relative;
+    width: 100%;
+}
+#timer_container{
+    background: #333;
+  }
 .upvote, .downvote {
     color: #aaacaf
 }

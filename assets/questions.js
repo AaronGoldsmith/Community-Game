@@ -316,7 +316,6 @@ function getRedditData(subreddit,maxQs){
       url: queryURL,
       method: "GET"
     }).then(function(response) {
-        firebase.database().ref("/historicial")
         var children = response.data.children;
         for(var i = 0;i<maxQs;i++){
         //     // console.log(children[i].data);
@@ -350,10 +349,14 @@ function extractData(Data){
         return QuestionObject(formattedTitle,0,0,author,creation)
 }
 
-
+var db;
 $(document).ready(function(){
     console.log(getRedditData("DoesAnybodyElse",10));
-
-    questionsArray.push()
+    db = firebase.database();
 })
 
+
+db.ref().child("activeQ").on('child_added', function (snapshot) {
+    var message = snapshot.val();
+    $('#active').html(message.question);
+});

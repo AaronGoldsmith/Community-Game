@@ -47,7 +47,6 @@ firebase.auth().onAuthStateChanged(function(user) {
     }
   });
   
-var db;
 var uiConfig = {
   callbacks: {
       signInSuccessWithAuthResult: function(authResult, redirectUrl) {
@@ -86,7 +85,7 @@ $(document).ready(function(){
 
       ui.start('#firebaseui-auth-container', uiConfig)
     })
-    db = firebase.database()
+    // db = firebase.database()
 
 
     //  This will replace the content 
@@ -116,29 +115,28 @@ $(document).ready(function(){
         }
       }
     });
-    function makeSampleQs(numQs){
-      var questions = [];
-      for(var i = 0;i<numQs;i++){
-        // push `numQs` # of questions into array to return
-       questions.push(QuestionObject("question"+i,
-                  Math.floor(Math.random()*5),
-                  Math.floor(Math.random()*100),
-                  "user"+Math.floor(Math.random()*125),
-                  new Date().toString()))
-      }
-      return questions;
-    }
+    // function makeSampleQs(numQs){
+    //   var questions = [];
+    //   for(var i = 0;i<numQs;i++){
+    //     // push `numQs` # of questions into array to return
+    //    questions.push(QuestionObject("question"+i,
+    //               Math.floor(Math.random()*5),
+    //               Math.floor(Math.random()*100),
+    //               "user"+Math.floor(Math.random()*125),
+    //               new Date().toString()))
+    //   }
+    //   return questions;
+    // }
      // will append data 
-  function addToHistorical(QList){
-    // add only when we have a list of 15 or less
-    if(QList.length<=15){
-      QList.forEach(function(question){
-        db.ref("/historical").push(question)
-      })
-    }  
-  }
-    var list = makeSampleQs(12);
-    addToHistorical(list);
+  // function addToHistorical(QList){
+  //   // add only when we have a list of 15 or less
+  //   if(QList.length<=15){
+  //     QList.forEach(function(question){
+  //       firebase.database().ref("/historical").push(question)
+  //     })
+  //   }  
+  // }
+    // addToHistorical(list);
     
     
 });

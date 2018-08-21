@@ -11,12 +11,10 @@ var questionsArray = [
 
 var active = [];
 
-
 // Timer
 var timerInterval;
 var timerActive = false;
 var checkInterval = window.setInterval(checkQuestions, 10000);
-
 var timer = {
     time: 16,
 
@@ -104,8 +102,8 @@ function addQuestion() {
 
 // This is a little unnecessary but adds delay after page load
 function loadQuestion() {
-    getRedditData("DoesAnybodyElse",2);
-
+    getRedditData("DoesAnybodyElse");
+    
     // qlist.forEach(function(jsonQ){
     //     var questionObj = extractData(jsonQ)
     //     console.log(questionObj);
@@ -274,7 +272,7 @@ $('#submit').on('click', function() {
 });
 
 // Starting the "game"
-$(document).ready(loadQuestion);
+// $(document).ready(loadQuestion);
 
 // Updating the DOM with the sample questions from the array
 addQuestion(); 
@@ -285,7 +283,7 @@ addQuestion();
 //
 function formatCMV( redditTitle ){  
     if(redditTitle.substring(0,4) === "CMV:"){ 
-        var questionPart = redditTitle.substring(4,redditTitle.length)
+        var questionPart = redditTitle.substring(5,redditTitle.length)
         return "Do you think " + questionPart;
     }
     return false;
@@ -293,7 +291,7 @@ function formatCMV( redditTitle ){
 
 function formatDAE( redditTitle ){  
     if(redditTitle.substring(0,3) === "DAE"){ 
-        var questionPart = redditTitle.substring(3,redditTitle.length)
+        var questionPart = redditTitle.substring(4,redditTitle.length)
         return "Do you " + questionPart;
     }
     return false;
@@ -311,28 +309,51 @@ function formatDAE( redditTitle ){
   return question;
 }
 function getRedditData(subreddit,maxQs){
-    var queryURL = "https://www.reddit.com/r/"+ subreddit +"/top/.json?count=10";
+    var queryURL = "http://www.reddit.com/r/"+ subreddit +"/top/.json";
     //gets a large chunk of data about a question
+
     $.ajax({
       url: queryURL,
-      data: {limit: maxQs, order: "desc"}, 
       method: "GET"
     }).then(function(response) {
-        return response.data;
+        firebase.database().ref("/historicial")
+        var children = response.data.children;
+        for(var i = 0;i<maxQs;i++){
+        //     // console.log(children[i].data);
+            var ID = children[i].data.id
+            var title = children[i].data.title;
+            var aut = children[i].data.author
+            var date = children[i].data.created_utc
+        //     questions.push(child.data);
+            firebase.database().ref("/historical/"+ID).push(
+                {
+                    question: formatDAE(title),
+                    agrees: 0,
+                    disagrees: 0,
+                    author: aut,
+                    created: date}
+            );
+        }
     });
+
+   
 }
 
 // PRE: a json data object consisting 
 //      of a single question
 function extractData(Data){
-    var formattedTitle = formatDAE(Data.title);
-    var author = Data.author;
-    var id = Data.id;
-    var creation = Data.created_utc;
-    return QuestionObject(formattedTitle,0,0,author,creation);
-}
-function fillUpcoming(qlist){
-       
+        // var title = Data.title;
+        var formattedTitle = formatDAE(Data.title);
+        var author = Data.author;
+        // var ID = Data.id;
+        var creation = Data.created_utc;
+        return QuestionObject(formattedTitle,0,0,author,creation)
 }
 
+
+$(document).ready(function(){
+    console.log(getRedditData("DoesAnybodyElse",10));
+
+    questionsArray.push()
+})
 

@@ -88,7 +88,7 @@ $(document).ready(function(){
     //  this function will return a question object
    
    // a little flippy floppy magic
-    $(".choice").on("click",function(){
+    $(".game-buttons").on("click",function(){
       // check which btn class we have, and remove it
       if($(this).hasClass("btn-success")){
         $(this).removeClass("btn-success")
@@ -101,12 +101,10 @@ $(document).ready(function(){
         if($(this).attr("id")=="agree"){
           $(this).addClass("btn-success")
           $(this).siblings().removeClass("btn-danger")
-
         }
         else{
           $(this).addClass("btn-danger")
           $(this).siblings().removeClass("btn-success")
-
         }
       }
     });

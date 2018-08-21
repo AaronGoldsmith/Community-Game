@@ -154,13 +154,13 @@ function updateVote(index) {
 // EVENTS
 
 // Event that retrieves from database and then calls function to update DOM
-// db.ref().on('child_added', function(snapshot) {
-//     question = snapshot.val().q;
-//     upvotes = snapshot.val().up;
-//     downvotes = snapshot.val().down;
-
-//     addQuestion();
-// });
+firebase.database().ref().on('child_added', function(snapshot) {
+    question = snapshot.val();
+    upvotes = snapshot.val();
+    downvotes = snapshot.val();
+    console.log(question,upvotes,downvotes)
+    // addQuestion();
+});
 
 // User upvotes a question
 $(document).on('click', '.upvote', function() {

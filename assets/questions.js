@@ -66,9 +66,7 @@ function addQuestion() {
 
         // Create upvote+downvote arrows
         var up = $('<i class="upvote fas fa-chevron-up"></i>');
-        // up.attr('data-vote', 'none');
         var down = $('<i class="downvote fas fa-chevron-down"></i>');
-        // down.attr('data-vote', 'none');
         var arrows = $('<div class="votes">');
 
         if (questionsArray[i].upvoted) {

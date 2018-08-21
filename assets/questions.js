@@ -11,12 +11,10 @@ var questionsArray = [
 
 var active = [];
 
-
 // Timer
 var timerInterval;
 var timerActive = false;
-// var checkInterval = window.setInterval(checkQuestions, 10000);
-
+var checkInterval = window.setInterval(checkQuestions, 10000);
 var timer = {
     time: 16,
 
@@ -114,7 +112,18 @@ function addQuestion() {
 
 // This is a little unnecessary but adds delay after page load
 function loadQuestion() {
-    setTimeout(function(){ next(); }, 1500);
+    getRedditData("DoesAnybodyElse");
+    
+    // qlist.forEach(function(jsonQ){
+    //     var questionObj = extractData(jsonQ)
+    //     console.log(questionObj);
+    //     db.ref("/upcomingQs").push(questionObj)
+    // });
+    // setTimeout(function(){
+    //     console.log(request);
+    //     fillUpcoming(request);
+    // },5000)
+    // setTimeout(function(){ next(); }, 1500);
 };
 
 // Restarts the game and shows p5 + buttons if it sees a question
@@ -155,13 +164,13 @@ function updateVote(index) {
 // EVENTS
 
 // Event that retrieves from database and then calls function to update DOM
-// db.ref().on('child_added', function(snapshot) {
-//     question = snapshot.val().q;
-//     upvotes = snapshot.val().up;
-//     downvotes = snapshot.val().down;
-
-//     addQuestion();
-// });
+firebase.database().ref().on('child_added', function(snapshot) {
+    question = snapshot.val();
+    upvotes = snapshot.val();
+    downvotes = snapshot.val();
+    console.log(question,upvotes,downvotes)
+    // addQuestion();
+});
 
 // User upvotes a question
 $(document).on('click', '.upvote', function() {
@@ -278,9 +287,13 @@ $('#submit').on('click', function() {
 // Updating the DOM with the sample questions from the array
 addQuestion(); 
 
+
+
+//          ~~~ PARSE TITLES ~~~
+//
 function formatCMV( redditTitle ){  
     if(redditTitle.substring(0,4) === "CMV:"){ 
-        var questionPart = redditTitle.substring(4,redditTitle.length)
+        var questionPart = redditTitle.substring(5,redditTitle.length)
         return "Do you think " + questionPart;
     }
     return false;
@@ -288,8 +301,69 @@ function formatCMV( redditTitle ){
 
 function formatDAE( redditTitle ){  
     if(redditTitle.substring(0,3) === "DAE"){ 
-        var questionPart = redditTitle.substring(3,redditTitle.length)
+        var questionPart = redditTitle.substring(4,redditTitle.length)
         return "Do you " + questionPart;
     }
     return false;
  }
+
+ // objects for ajax
+ function QuestionObject(q,up,down,aut,date){
+    let question = {
+        _question: q,
+        upvotes: up,        // agree
+        downvotes: down,    // disagree
+        author: aut,        // author or user
+        date: date          // date posted
+    }
+  return question;
+}
+function getRedditData(subreddit,maxQs){
+    var queryURL = "http://www.reddit.com/r/"+ subreddit +"/top/.json";
+    //gets a large chunk of data about a question
+
+    $.ajax({
+      url: queryURL,
+      method: "GET"
+    }).then(function(response) {
+        firebase.database().ref("/historicial")
+        var children = response.data.children;
+        for(var i = 0;i<maxQs;i++){
+        //     // console.log(children[i].data);
+            var ID = children[i].data.id
+            var title = children[i].data.title;
+            var aut = children[i].data.author
+            var date = children[i].data.created_utc
+        //     questions.push(child.data);
+            firebase.database().ref("/historical/"+ID).push(
+                {
+                    question: formatDAE(title),
+                    agrees: 0,
+                    disagrees: 0,
+                    author: aut,
+                    created: date}
+            );
+        }
+    });
+
+   
+}
+
+// PRE: a json data object consisting 
+//      of a single question
+function extractData(Data){
+        // var title = Data.title;
+        var formattedTitle = formatDAE(Data.title);
+        var author = Data.author;
+        // var ID = Data.id;
+        var creation = Data.created_utc;
+        return QuestionObject(formattedTitle,0,0,author,creation)
+}
+
+
+$(document).ready(function(){
+    console.log(getRedditData("DoesAnybodyElse",10));
+
+    questionsArray.push()
+})
+

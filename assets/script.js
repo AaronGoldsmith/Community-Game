@@ -10,6 +10,20 @@ function QuestionObject(q,up,down,aut,date){
   }
   return question;
 }
+function getRedditData(subreddit,maxQs){
+  var queryURL = "https://www.reddit.com/r/"+ subreddit +"/top/.json?count=10";
+  //gets a large chunk of data about a question
+  var questions = [];
+  $.ajax({
+    url: queryURL,
+    data: {limit: maxQs, order: "desc"}, 
+    method: "GET"
+  }).then(function(response) {
+      return response;
+  //   console.log(response);
+  //   console.log(response.data);
+  })
+}
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
 
@@ -22,10 +36,10 @@ firebase.auth().onAuthStateChanged(function(user) {
       // var uid = user.uid;
       // var providerData = user.providerData;
 
-   firebase.database().ref("/users").set({
+   firebase.database().ref("/users/"+email).set({
           user: displayName,
           email: email
-      })
+    })
       console.log(displayName + ", you successfully signed in")
     } else {
       // not signed in
@@ -33,7 +47,6 @@ firebase.auth().onAuthStateChanged(function(user) {
     }
   });
   
-var db;
 var uiConfig = {
   callbacks: {
       signInSuccessWithAuthResult: function(authResult, redirectUrl) {
@@ -72,20 +85,7 @@ $(document).ready(function(){
 
       ui.start('#firebaseui-auth-container', uiConfig)
     })
-    db = firebase.database()
 
-
-    //  This will replace the content 
- 
-    // db.ref("/upcomingQs").set({
-    //     questionsLeft: 0
-    // })
-   
-    db.ref("/activeQ").set({
-        timeLeft: 30
-    })
-
-    //  this function will return a question object
    
    // a little flippy floppy magic
     $(".game-buttons").on("click",function(){
@@ -108,29 +108,28 @@ $(document).ready(function(){
         }
       }
     });
-    function makeSampleQs(numQs){
-      var questions = [];
-      for(var i = 0;i<numQs;i++){
-        // push `numQs` # of questions into array to return
-       questions.push(QuestionObject("question"+i,
-                  Math.floor(Math.random()*5),
-                  Math.floor(Math.random()*100),
-                  "user"+Math.floor(Math.random()*125),
-                  new Date().toString()))
-      }
-      return questions;
-    }
+    // function makeSampleQs(numQs){
+    //   var questions = [];
+    //   for(var i = 0;i<numQs;i++){
+    //     // push `numQs` # of questions into array to return
+    //    questions.push(QuestionObject("question"+i,
+    //               Math.floor(Math.random()*5),
+    //               Math.floor(Math.random()*100),
+    //               "user"+Math.floor(Math.random()*125),
+    //               new Date().toString()))
+    //   }
+    //   return questions;
+    // }
      // will append data 
-  function addToHistorical(QList){
-    // add only when we have a list of 15 or less
-    if(QList.length<=15){
-      QList.forEach(function(question){
-        db.ref("/historical").push(question)
-      })
-    }  
-  }
-    var list = makeSampleQs(12);
-    addToHistorical(list);
+  // function addToHistorical(QList){
+  //   // add only when we have a list of 15 or less
+  //   if(QList.length<=15){
+  //     QList.forEach(function(question){
+  //       firebase.database().ref("/historical").push(question)
+  //     })
+  //   }  
+  // }
+    // addToHistorical(list);
     
     
 });

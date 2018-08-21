@@ -11,12 +11,10 @@ var questionsArray = [
 
 var active = [];
 
-
 // Timer
 var timerInterval;
 var timerActive = false;
 var checkInterval = window.setInterval(checkQuestions, 10000);
-
 var timer = {
     time: 16,
 
@@ -103,11 +101,14 @@ function addQuestion() {
 };
 
 // This is a little unnecessary but adds delay after page load
-function loadQuestion() {
-    setTimeout(function(){ next(); }, 1500);
-};
+
 
 function checkQuestions() {
+    // check for questions in db?
+    firebase.database().ref.once('value')
+        .then(function(dataSnapshot) {
+            // handle read data.
+    });
     if (!timerActive && questionsArray.length > 0) {
         next();
         $('#sketch-box').show();
@@ -115,6 +116,7 @@ function checkQuestions() {
     }
 };
 
+// not clear what this function does
 function next() {
     timer.reset();
 
@@ -144,13 +146,6 @@ function updateVote(index) {
 // EVENTS
 
 // Event that retrieves from database and then calls function to update DOM
-// db.ref().on('child_added', function(snapshot) {
-//     question = snapshot.val().q;
-//     upvotes = snapshot.val().up;
-//     downvotes = snapshot.val().down;
-
-//     addQuestion();
-// });
 
 // User upvotes a question
 $(document).on('click', '.upvote', function() {
@@ -262,14 +257,18 @@ $('#submit').on('click', function() {
 });
 
 // Starting the "game"
-$(document).ready(loadQuestion);
+// $(document).ready(loadQuestion);
 
 // Updating the DOM with the sample questions from the array
 addQuestion(); 
 
+
+
+//          ~~~ PARSE TITLES ~~~
+//
 function formatCMV( redditTitle ){  
     if(redditTitle.substring(0,4) === "CMV:"){ 
-        var questionPart = redditTitle.substring(4,redditTitle.length)
+        var questionPart = redditTitle.substring(5,redditTitle.length)
         return "Do you think " + questionPart;
     }
     return false;
@@ -277,8 +276,90 @@ function formatCMV( redditTitle ){
 
 function formatDAE( redditTitle ){  
     if(redditTitle.substring(0,3) === "DAE"){ 
-        var questionPart = redditTitle.substring(3,redditTitle.length)
+        var questionPart = redditTitle.substring(4,redditTitle.length)
         return "Do you " + questionPart;
     }
     return false;
  }
+
+ // objects for ajax
+ function QuestionObject(q,up,down,aut,date){
+    let question = {
+        _question: q,
+        upvotes: up,        // agree
+        downvotes: down,    // disagree
+        author: aut,        // author or user
+        date: date          // date posted
+    }
+  return question;
+}
+function getRedditData(subreddit,maxQs){
+    var queryURL = "https://www.reddit.com/r/"+ subreddit +"/top/.json";
+    //gets a large chunk of data about a question
+
+    $.ajax({
+      url: queryURL,
+      method: "GET"
+    }).then(function(response) {
+        var children = response.data.children;
+        for(var i = 0;i<maxQs;i++){
+        //     // console.log(children[i].data);
+            var ID = children[i].data.id
+            var title = children[i].data.title;
+            var aut = children[i].data.author
+            var date = children[i].data.created_utc
+        //     questions.push(child.data);
+            var obj = {
+                    question: formatDAE(title),
+                    agrees: 0,
+                    id: ID,
+                    disagrees: 0,
+                    author: aut,
+                    created: date
+                }
+            firebase.database().ref("/upcomingQs").push({obj});
+
+            db.child(ID).on('value', function(snapshot){
+                console.log("checking for 'historical' questions")
+                if(!snapshot.exists()){
+                    console.log()
+                    
+
+                    }
+        
+                });
+            }
+        
+    })
+
+   
+}
+
+// PRE: a json data object consisting 
+//      of a single question
+function extractData(Data){
+        // var title = Data.title;
+        var formattedTitle = formatDAE(Data.title);
+        var author = Data.author;
+        // var ID = Data.id;
+        var creation = Data.created_utc;
+        return QuestionObject(formattedTitle,0,0,author,creation)
+}
+
+var db;
+
+// db triggers
+$(document).ready(function(){
+    getRedditData("DoesAnybodyElse",10);
+    db = firebase.database().ref();
+
+   db.child("historical").on("child_added",function (snapshot){
+       console.log("added to historical")
+   })
+
+    db.child("activeQ").on('child_added', function (snapshot) {
+        var message = snapshot.val();
+        $('#active').html(message.question);
+    });
+    
+})

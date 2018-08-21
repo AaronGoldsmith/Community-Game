@@ -37,7 +37,6 @@ var timer = {
         if (!timerActive) {
             timerInterval = setInterval(timer.countDown, 1000);
             timerActive = true;
-            // $('#timer').text('');
         }
     },
 
@@ -58,24 +57,22 @@ var timer = {
 };
 
 // FUNCTIONS
-// This is breaking ratings when the questions are redone
-// Need to divide it up     
+ 
 function addQuestion() {
     $('#tba-container').empty();
     for (var i = 0; i < questionsArray.length; i++) {
         // Create single row+column for new question
         var newRow = $('<tr>');
-        var newCol = $('<td>');
-        var newQ = $('<div class="question">');
+        var rateCol = $('<td class="rating">');
+        var voteCol = $('<td class="votes">');
+        var questCol = $('<td class="question">');
 
         // Rating variables
-        var rating = $('<div class="rating">');
-        rating.text(questionsArray[i].up - questionsArray[i].down);
+        rateCol.text(questionsArray[i].up - questionsArray[i].down);
 
         // Create upvote+downvote arrows
         var up = $('<i class="upvote fas fa-chevron-up"></i>');
         var down = $('<i class="downvote fas fa-chevron-down"></i>');
-        var arrows = $('<div class="votes">');
 
         if (questionsArray[i].upvoted) {
             up.attr('data-vote', 'upvoted');
@@ -96,26 +93,45 @@ function addQuestion() {
         tempID = i; 
         up.attr('id', `up-${tempID}`);
         down.attr('id', `down-${tempID}`);
-        rating.attr('id', `rating-${tempID}`);
+        rateCol.attr('id', `rating-${tempID}`);
 
-        // Append things
-        arrows.append(up);
-        arrows.append(down);
-        newQ.append(questionsArray[i].q);
-        newCol.append(newQ);
-        newRow.append(newCol);
-        newCol.prepend(arrows);
-        newCol.prepend(rating);
+        // Append things to table
+        voteCol.append(up);
+        voteCol.append(down);
+        questCol.append(questionsArray[i].q);
+        newRow.append(rateCol);
+        newRow.append(voteCol);
+        newRow.append(questCol);
         $('#tba-container').append(newRow);
     }
 };
 
 // This is a little unnecessary but adds delay after page load
+function loadQuestion() {
+    setTimeout(function(){ next(); }, 1500);
+};
 
 
+// Restarts the game and shows p5 + buttons if it sees a question
+// This is why next() runs even though the document.ready event was disabled (don't know why it was disabled)
+function checkQuestions() {
 
+    // Commenting this out because it's breaking this function
+    
+    // check for questions in db?
+    // firebase.database().ref.once('value')
+    //     .then(function(dataSnapshot) {
+    //         // handle read data.
+    // });
+    if (!timerActive && questionsArray.length > 0) {
+        next();
+        $('#sketch-box').show();
+        $('.game-buttons').show();
+    }
+};
 
-// not clear what this function does
+// Gets next question and restarts timer if there's another  question
+// Hides the p5 and buttons if there's no question
 function next() {
     timer.reset();
 
@@ -124,12 +140,10 @@ function next() {
         active.push(questionsArray.shift());
         addQuestion();
         $('#active').text(active[0].q);
-        // timer.reset();
         timer.start();
     }
     else {
         $('#active').empty();
-        // timer.reset();
         timer.stop();
         $('#sketch-box').hide();
         $('.game-buttons').hide();
@@ -139,7 +153,6 @@ function next() {
 
 function updateVote(index) {
     $(`#rating-${index}`).text(questionsArray[index].up - questionsArray[index].down);
-   
 };
 
 // EVENTS
@@ -187,6 +200,12 @@ $(document).on('click', '.upvote', function() {
     // })
 
     updateVote(index);
+    questionsArray.sort(function(a, b) {
+        if ((a.up - a.down) > (b.up - b.down)) return -1;
+        if ((a.up - a.down) < (b.up - b.down)) return 1; 
+    })
+    addQuestion();
+    console.log(questionsArray);
     console.log(`#${this.id} Upvoted!`);
 });
 
@@ -223,8 +242,14 @@ $(document).on('click', `.downvote`, function() {
         questionsArray[index].upvoted = false;
         questionsArray[index].downvoted = true;
     }
-    
+
     updateVote(index);
+    questionsArray.sort(function(a, b) {
+        if ((a.up - a.down) > (b.up - b.down)) return -1;
+        if ((a.up - a.down) < (b.up - b.down)) return 1; 
+    })
+    addQuestion();
+    console.log(questionsArray);
     console.log(`#${this.id} Downvoted!`);
 });
 
@@ -256,7 +281,7 @@ $('#submit').on('click', function() {
 });
 
 // Starting the "game"
-// $(document).ready(loadQuestion);
+$(document).ready(loadQuestion);
 
 // Updating the DOM with the sample questions from the array
 

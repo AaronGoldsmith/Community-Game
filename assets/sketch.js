@@ -16,7 +16,7 @@ function setup() {
 }
 
 function draw() {
-  background(255);
+  // background(255);
 	if(mouseX>5&&mouseX<width-margin){
 		stats1 = map(mouseX,5,width,0,1);
 		stats2 = 1-stats1;

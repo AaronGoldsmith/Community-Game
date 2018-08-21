@@ -154,13 +154,6 @@ function updateVote(index) {
 // EVENTS
 
 // Event that retrieves from database and then calls function to update DOM
-firebase.database().ref().on('child_added', function(snapshot) {
-    question = snapshot.val();
-    upvotes = snapshot.val();
-    downvotes = snapshot.val();
-    console.log(question,upvotes,downvotes)
-    // addQuestion();
-});
 
 // User upvotes a question
 $(document).on('click', '.upvote', function() {
@@ -309,7 +302,7 @@ function formatDAE( redditTitle ){
   return question;
 }
 function getRedditData(subreddit,maxQs){
-    var queryURL = "http://www.reddit.com/r/"+ subreddit +"/top/.json";
+    var queryURL = "https://www.reddit.com/r/"+ subreddit +"/top/.json";
     //gets a large chunk of data about a question
 
     $.ajax({
@@ -324,16 +317,22 @@ function getRedditData(subreddit,maxQs){
             var aut = children[i].data.author
             var date = children[i].data.created_utc
         //     questions.push(child.data);
-            firebase.database().ref("/historical/"+ID).push(
-                {
-                    question: formatDAE(title),
-                    agrees: 0,
-                    disagrees: 0,
-                    author: aut,
-                    created: date}
-            );
-        }
-    });
+            db.child('historical').child(ID).once('value', function(snapshot){
+                console.log("checking for 'historical' questions")
+                if(!snapshot.exists()){
+                    db.ref("/historical/"+ID).push({
+                            question: formatDAE(title),
+                            agrees: 0,
+                            disagrees: 0,
+                            author: aut,
+                            created: date
+                        });
+                    }
+        
+                });
+            }
+        
+    })
 
    
 }
@@ -350,13 +349,16 @@ function extractData(Data){
 }
 
 var db;
+
+// db triggers
 $(document).ready(function(){
-    console.log(getRedditData("DoesAnybodyElse",10));
-    db = firebase.database();
+    getRedditData("DoesAnybodyElse",10);
+    db = firebase.database().ref();
+
+   
+    db.child("activeQ").on('child_added', function (snapshot) {
+        var message = snapshot.val();
+        $('#active').html(message.question);
+    });
+    
 })
-
-
-db.ref().child("activeQ").on('child_added', function (snapshot) {
-    var message = snapshot.val();
-    $('#active').html(message.question);
-});

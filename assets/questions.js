@@ -15,7 +15,7 @@ var active = [];
 // Timer
 var timerInterval;
 var timerActive = false;
-var checkInterval = window.setInterval(checkQuestions, 10000);
+// var checkInterval = window.setInterval(checkQuestions, 10000);
 
 var timer = {
     time: 16,
@@ -49,8 +49,7 @@ var timer = {
 };
 
 // FUNCTIONS
-// This is breaking ratings when the questions are redone
-// Need to divide it up     
+ 
 function addQuestion() {
     $('#tba-container').empty();
 
@@ -59,7 +58,7 @@ function addQuestion() {
         var newRow = $('<tr>');
         // var newCol = $('<td>');
         // var newQ = $('<div class="question">');
-        var rateCol = $('<td>');
+        var rateCol = $('<td class="rating">');
         var voteCol = $('<td class="votes">');
         var questCol = $('<td class="question">');
 
@@ -118,6 +117,7 @@ function loadQuestion() {
     setTimeout(function(){ next(); }, 1500);
 };
 
+// Restarts the game and shows p5 + buttons if it sees a question
 function checkQuestions() {
     if (!timerActive && questionsArray.length > 0) {
         next();
@@ -126,6 +126,8 @@ function checkQuestions() {
     }
 };
 
+// Gets next question and restarts timer if there's another  question
+// Hides the p5 and buttons if there's no question
 function next() {
     timer.reset();
 
@@ -134,12 +136,10 @@ function next() {
         active.push(questionsArray.shift());
         addQuestion();
         $('#active').text(active[0].q);
-        // timer.reset();
         timer.start();
     }
     else {
         $('#active').empty();
-        // timer.reset();
         timer.stop();
         $('#sketch-box').hide();
         $('.game-buttons').hide();
@@ -273,7 +273,7 @@ $('#submit').on('click', function() {
 });
 
 // Starting the "game"
-$(document).ready(loadQuestion);
+// $(document).ready(loadQuestion);
 
 // Updating the DOM with the sample questions from the array
 addQuestion(); 

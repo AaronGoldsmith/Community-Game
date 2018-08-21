@@ -97,16 +97,21 @@ function addQuestion() {
 };
 
 // This is a little unnecessary but adds delay after page load
-
+function loadQuestion() {
+    setTimeout(function(){ next(); }, 1500);
+};
 
 // Restarts the game and shows p5 + buttons if it sees a question
 // This is why next() runs even though the document.ready event was disabled (don't know why it was disabled)
 function checkQuestions() {
+
+    // Commenting this out because it's breaking this function
+    
     // check for questions in db?
-    firebase.database().ref.once('value')
-        .then(function(dataSnapshot) {
-            // handle read data.
-    });
+    // firebase.database().ref.once('value')
+    //     .then(function(dataSnapshot) {
+    //         // handle read data.
+    // });
     if (!timerActive && questionsArray.length > 0) {
         next();
         $('#sketch-box').show();
@@ -184,6 +189,12 @@ $(document).on('click', '.upvote', function() {
     // })
 
     updateVote(index);
+    questionsArray.sort(function(a, b) {
+        if ((a.up - a.down) > (b.up - b.down)) return -1;
+        if ((a.up - a.down) < (b.up - b.down)) return 1; 
+    })
+    addQuestion();
+    console.log(questionsArray);
     console.log(`#${this.id} Upvoted!`);
 });
 
@@ -220,8 +231,14 @@ $(document).on('click', `.downvote`, function() {
         questionsArray[index].upvoted = false;
         questionsArray[index].downvoted = true;
     }
-    
+
     updateVote(index);
+    questionsArray.sort(function(a, b) {
+        if ((a.up - a.down) > (b.up - b.down)) return -1;
+        if ((a.up - a.down) < (b.up - b.down)) return 1; 
+    })
+    addQuestion();
+    console.log(questionsArray);
     console.log(`#${this.id} Downvoted!`);
 });
 
@@ -253,7 +270,7 @@ $('#submit').on('click', function() {
 });
 
 // Starting the "game"
-// $(document).ready(loadQuestion);
+$(document).ready(loadQuestion);
 
 // Updating the DOM with the sample questions from the array
 addQuestion(); 

@@ -4,29 +4,49 @@ var question = '';
 // Temporary question array for testing - this should be done firebase-side
 var questionsArray = [
     {q: 'Is this an example question?', up: 0, down: 0, upvoted: false, downvoted: false },
-    {q: 'Is this the second example question?', up: 0, down: 0, upvoted: false, downvoted: false }
+    {q: 'Is this the second example question?', up: 0, down: 0, upvoted: false, downvoted: false },
+    {q: 'More questions so you can actually have time to vote on some of them?', up: 0, down: 0, upvoted: false, downvoted: false },
+    {q: 'blah blah blah blah blah?', up: 0, down: 0, upvoted: false, downvoted: false }
 ];
 
-// var timer = {
-//     time: 16,
+var active = [];
 
-//     reset: function() {
-//         timer.time = 16;
-//     },
 
-//     start: function() {
-//         if (!timerActive) {
-//             timerInterval = setInterval(timer.countDown, 1000);
-//             timerActive = true;
-//             // $('#timer').text('');
-//         }
-//     },
+// Timer
+var timerInterval;
+var timerActive = false;
+var checkInterval = window.setInterval(checkQuestions, 10000);
 
-//     countDown: function() {
-//         timer.time--;
-//         $('#timer').text()
-//     }
-// }
+var timer = {
+    time: 16,
+
+    reset: function() {
+        timer.time = 16;
+    },
+
+    start: function() {
+        if (!timerActive) {
+            timerInterval = setInterval(timer.countDown, 1000);
+            timerActive = true;
+            // $('#timer').text('');
+        }
+    },
+
+    countDown: function() {
+        timer.time--;
+        $('#timer').text(`${timer.time} seconds remaining.`)
+        if (timer.time <= 0) {
+            timer.stop();
+            setTimeout(function(){ next(); }, 1500)
+        }
+    },
+
+    stop: function() {
+        clearInterval(timerInterval);
+        timerActive = false;
+        $('#timer').text('');
+    }
+};
 
 // FUNCTIONS
 // This is breaking ratings when the questions are redone
@@ -84,9 +104,38 @@ function addQuestion() {
     }
 };
 
-// function loadQuestion() {
-//     setTimeout(function(){ next(); }, )
-// }
+// This is a little unnecessary but adds delay after page load
+function loadQuestion() {
+    setTimeout(function(){ next(); }, 1500);
+};
+
+function checkQuestions() {
+    if (!timerActive && questionsArray.length > 0) {
+        next();
+        $('#sketch-box').show();
+        $('.game-buttons').show();
+    }
+};
+
+function next() {
+    timer.reset();
+
+    if (questionsArray.length > 0) {
+        active.shift();
+        active.push(questionsArray.shift());
+        addQuestion();
+        $('#active').text(active[0].q);
+        // timer.reset();
+        timer.start();
+    }
+    else {
+        $('#active').empty();
+        // timer.reset();
+        timer.stop();
+        $('#sketch-box').hide();
+        $('.game-buttons').hide();
+    }    
+};
 
 
 function updateVote(index) {
@@ -137,25 +186,7 @@ $(document).on('click', '.upvote', function() {
         questionsArray[index].up++;
         questionsArray[index].upvoted = true;
         questionsArray[index].downvoted = false;
-    }
-
-    // if (upState === 'none' && downState === 'none') {
-    //     upElem.attr('data-vote', 'upvoted');
-
-    //     questionsArray[index].up++;
-    // }
-    // else if (upState === 'upvoted') {
-    //     console.log('You already upvoted.');
-    //     return false;
-    // }
-    // else if (downState === 'downvoted') {
-    //     console.log('You changed your vote.');
-    //     upElem.attr('data-vote', 'upvoted');
-    //     downElem.attr('data-vote', 'none');
-        
-    //     questionsArray[index].up++;
-    //     questionsArray[index].down--;
-    // }    
+    }  
 
     // firebase - not sure how this works with selecting the specific question
     // upVotes++;
@@ -199,32 +230,7 @@ $(document).on('click', `.downvote`, function() {
         questionsArray[index].down++;
         questionsArray[index].upvoted = false;
         questionsArray[index].downvoted = true;
-    } 
-    
-    
-    // if (upState === 'none' && downState === 'none') {
-    //     downElem.attr('data-vote', 'downvoted');
-
-    //     questionsArray[index].down++;
-    // }
-    // else if (downState === 'downvoted') {
-    //     console.log('You already downvoted.');
-    //     return false;
-    // }
-    // else if (upState === 'upvoted') {
-    //     console.log('You changed your vote.');
-    //     upElem.attr('data-vote', 'none');
-    //     downElem.attr('data-vote', 'downvoted');
-        
-    //     questionsArray[index].up--;
-    //     questionsArray[index].down++;
-    // }
-
-    // firebase - not sure how this works with selecting the specific question
-    // downVotes++
-    // db.ref().set({
-    //     down: downVotes
-    // })
+    }
     
     updateVote(index);
     console.log(`#${this.id} Downvoted!`);
@@ -258,7 +264,7 @@ $('#submit').on('click', function() {
 });
 
 // Starting the "game"
-// $(document).ready(loadQuestion);
+$(document).ready(loadQuestion);
 
 // Updating the DOM with the sample questions from the array
 addQuestion(); 

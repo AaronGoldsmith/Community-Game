@@ -41,13 +41,44 @@ form {
     margin-bottom: 0;
 }
 
+.active-question {
+    height: 180px;
+    overflow: auto;
+}
+
+#active {
+    height: 24px;
+}
+
+#timer {
+    height: 20px;
+}
+
 #sketch-box {
-    height: 30px;
+    height: 40px;
+}
+
+#agree, #disagree {
+    width: 90px;
+    border: none;
+}
+
+#agree:hover {
+    background: #32a33f;
+}
+
+#disagree:hover {
+    background: #a23131;
+}
+
+#agree:focus, #disagree:focus {
+    box-shadow: none;
 }
 
 .tba-card {
     margin-top: 64px;
 }
+
 .guest-text{
     visibility:hidden;
 }
@@ -68,4 +99,12 @@ form {
 
 .fas:hover {
     text-shadow: 0 1px 1px black;
+}
+
+.upvote, .downvote {
+    color: #aaacaf
+}
+
+.upvote[data-vote="upvoted"], .downvote[data-vote="downvoted"] {
+    color: #000;
 }

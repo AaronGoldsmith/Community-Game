@@ -101,22 +101,14 @@ function addQuestion() {
 };
 
 // This is a little unnecessary but adds delay after page load
-function loadQuestion() {
-    getRedditData("DoesAnybodyElse");
-    
-    // qlist.forEach(function(jsonQ){
-    //     var questionObj = extractData(jsonQ)
-    //     console.log(questionObj);
-    //     db.ref("/upcomingQs").push(questionObj)
-    // });
-    // setTimeout(function(){
-    //     console.log(request);
-    //     fillUpcoming(request);
-    // },5000)
-    // setTimeout(function(){ next(); }, 1500);
-};
+
 
 function checkQuestions() {
+    // check for questions in db?
+    firebase.database().ref.once('value')
+        .then(function(dataSnapshot) {
+            // handle read data.
+    });
     if (!timerActive && questionsArray.length > 0) {
         next();
         $('#sketch-box').show();
@@ -317,16 +309,22 @@ function getRedditData(subreddit,maxQs){
             var aut = children[i].data.author
             var date = children[i].data.created_utc
         //     questions.push(child.data);
-            db.child('historical').child(ID).once('value', function(snapshot){
+            var obj = {
+                    question: formatDAE(title),
+                    agrees: 0,
+                    id: ID,
+                    disagrees: 0,
+                    author: aut,
+                    created: date
+                }
+            firebase.database().ref("/historical/").set({ID: obj});
+
+            db.child(ID).on('value', function(snapshot){
                 console.log("checking for 'historical' questions")
                 if(!snapshot.exists()){
-                    db.ref("/historical/"+ID).push({
-                            question: formatDAE(title),
-                            agrees: 0,
-                            disagrees: 0,
-                            author: aut,
-                            created: date
-                        });
+                    console.log()
+                    
+
                     }
         
                 });
@@ -355,7 +353,10 @@ $(document).ready(function(){
     getRedditData("DoesAnybodyElse",10);
     db = firebase.database().ref();
 
-   
+   db.child("historical").on("child_added",function (snapshot){
+       console.log("added to historical")
+   })
+
     db.child("activeQ").on('child_added', function (snapshot) {
         var message = snapshot.val();
         $('#active').html(message.question);

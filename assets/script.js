@@ -85,14 +85,7 @@ $(document).ready(function(){
 
       ui.start('#firebaseui-auth-container', uiConfig)
     })
-    // db = firebase.database()
 
-
-    //  This will replace the content 
-
-   
-  
-    //  this function will return a question object
    
    // a little flippy floppy magic
     $(".game-buttons").on("click",function(){

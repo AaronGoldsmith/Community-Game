@@ -97,24 +97,16 @@ function addQuestion() {
 };
 
 // This is a little unnecessary but adds delay after page load
-function loadQuestion() {
-    getRedditData("DoesAnybodyElse");
-    
-    // qlist.forEach(function(jsonQ){
-    //     var questionObj = extractData(jsonQ)
-    //     console.log(questionObj);
-    //     db.ref("/upcomingQs").push(questionObj)
-    // });
-    // setTimeout(function(){
-    //     console.log(request);
-    //     fillUpcoming(request);
-    // },5000)
-    // setTimeout(function(){ next(); }, 1500);
-};
+
 
 // Restarts the game and shows p5 + buttons if it sees a question
 // This is why next() runs even though the document.ready event was disabled (don't know why it was disabled)
 function checkQuestions() {
+    // check for questions in db?
+    firebase.database().ref.once('value')
+        .then(function(dataSnapshot) {
+            // handle read data.
+    });
     if (!timerActive && questionsArray.length > 0) {
         next();
         $('#sketch-box').show();
@@ -150,13 +142,6 @@ function updateVote(index) {
 // EVENTS
 
 // Event that retrieves from database and then calls function to update DOM
-firebase.database().ref().on('child_added', function(snapshot) {
-    question = snapshot.val();
-    upvotes = snapshot.val();
-    downvotes = snapshot.val();
-    console.log(question,upvotes,downvotes)
-    // addQuestion();
-});
 
 // User upvotes a question
 $(document).on('click', '.upvote', function() {
@@ -305,14 +290,13 @@ function formatDAE( redditTitle ){
   return question;
 }
 function getRedditData(subreddit,maxQs){
-    var queryURL = "http://www.reddit.com/r/"+ subreddit +"/top/.json";
+    var queryURL = "https://www.reddit.com/r/"+ subreddit +"/top/.json";
     //gets a large chunk of data about a question
 
     $.ajax({
       url: queryURL,
       method: "GET"
     }).then(function(response) {
-        firebase.database().ref("/historicial")
         var children = response.data.children;
         for(var i = 0;i<maxQs;i++){
         //     // console.log(children[i].data);
@@ -321,16 +305,28 @@ function getRedditData(subreddit,maxQs){
             var aut = children[i].data.author
             var date = children[i].data.created_utc
         //     questions.push(child.data);
-            firebase.database().ref("/historical/"+ID).push(
-                {
+            var obj = {
                     question: formatDAE(title),
                     agrees: 0,
+                    id: ID,
                     disagrees: 0,
                     author: aut,
-                    created: date}
-            );
-        }
-    });
+                    created: date
+                }
+            firebase.database().ref("/upcomingQs").push({obj});
+
+            db.child(ID).on('value', function(snapshot){
+                console.log("checking for 'historical' questions")
+                if(!snapshot.exists()){
+                    console.log()
+                    
+
+                    }
+        
+                });
+            }
+        
+    })
 
    
 }
@@ -346,10 +342,20 @@ function extractData(Data){
         return QuestionObject(formattedTitle,0,0,author,creation)
 }
 
+var db;
 
+// db triggers
 $(document).ready(function(){
-    console.log(getRedditData("DoesAnybodyElse",10));
+    getRedditData("DoesAnybodyElse",10);
+    db = firebase.database().ref();
 
-    questionsArray.push()
+   db.child("historical").on("child_added",function (snapshot){
+       console.log("added to historical")
+   })
+
+    db.child("activeQ").on('child_added', function (snapshot) {
+        var message = snapshot.val();
+        $('#active').html(message.question);
+    });
+    
 })
-

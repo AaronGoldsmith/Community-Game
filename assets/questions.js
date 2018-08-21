@@ -26,7 +26,6 @@ var timer = {
         if (!timerActive) {
             timerInterval = setInterval(timer.countDown, 1000);
             timerActive = true;
-            // $('#timer').text('');
         }
     },
 
@@ -54,21 +53,16 @@ function addQuestion() {
     for (var i = 0; i < questionsArray.length; i++) {
         // Create single row+column for new question
         var newRow = $('<tr>');
-        // var newCol = $('<td>');
-        // var newQ = $('<div class="question">');
         var rateCol = $('<td class="rating">');
         var voteCol = $('<td class="votes">');
         var questCol = $('<td class="question">');
 
         // Rating variables
-        // var rating = $('<div class="rating">');
-        // rating.text(questionsArray[i].up - questionsArray[i].down);
         rateCol.text(questionsArray[i].up - questionsArray[i].down);
 
         // Create upvote+downvote arrows
         var up = $('<i class="upvote fas fa-chevron-up"></i>');
         var down = $('<i class="downvote fas fa-chevron-down"></i>');
-        // var arrows = $('<div class="votes">');
 
         if (questionsArray[i].upvoted) {
             up.attr('data-vote', 'upvoted');
@@ -89,23 +83,15 @@ function addQuestion() {
         tempID = i; 
         up.attr('id', `up-${tempID}`);
         down.attr('id', `down-${tempID}`);
-        // rating.attr('id', `rating-${tempID}`);
         rateCol.attr('id', `rating-${tempID}`);
 
-        // Append things
-        // arrows.append(up);
-        // arrows.append(down);
+        // Append things to table
         voteCol.append(up);
         voteCol.append(down);
-        // newQ.append(questionsArray[i].q);
         questCol.append(questionsArray[i].q);
-        // newCol.append(newQ);
-        // newRow.append(newCol);
         newRow.append(rateCol);
         newRow.append(voteCol);
         newRow.append(questCol);
-        // newCol.prepend(arrows);
-        // newCol.prepend(rating);
         $('#tba-container').append(newRow);
     }
 };
@@ -127,6 +113,7 @@ function loadQuestion() {
 };
 
 // Restarts the game and shows p5 + buttons if it sees a question
+// This is why next() runs even though the document.ready event was disabled (don't know why it was disabled)
 function checkQuestions() {
     if (!timerActive && questionsArray.length > 0) {
         next();
@@ -158,7 +145,6 @@ function next() {
 
 function updateVote(index) {
     $(`#rating-${index}`).text(questionsArray[index].up - questionsArray[index].down);
-   
 };
 
 // EVENTS

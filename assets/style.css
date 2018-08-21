@@ -5,7 +5,6 @@ body,html{
     margin: 0;
     padding: 0;
     height: 100%;
-    /* background: #e5efff; */
     background: #183a66;
     color: #fff;
 }
@@ -39,7 +38,6 @@ body,html{
 
 #question-input:focus {
     box-shadow: none;
-    background: #a6c1ed;
     color: #fff;
 }
 
@@ -184,19 +182,3 @@ button#timer {
 .close:hover {
     color: #00aeff !important;
 }
-
-/* .firebaseui-idp-button {
-    background: #00aeff !important;
-}
-
-.firebaseui-idp-google {
-    background: #fff !important;
-}
-
-.firebaseui-idp-button:hover {
-    background: #66ceff !important;
-}
-
-.firebaseui-idp-button:hover {
-    color: #fff !important;
-} */

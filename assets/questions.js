@@ -3,12 +3,54 @@ var question = '';
 
 // Temporary question array for testing - this should be done firebase-side
 var questionsArray = [
-    {q: 'Is this an example question?', up: 0, down: 0 },
-    {q: 'Is this the second example question?', up: 0, down: 0 }
+    {q: 'Is this an example question?', up: 0, down: 0, upvoted: false, downvoted: false },
+    {q: 'Is this the second example question?', up: 0, down: 0, upvoted: false, downvoted: false },
+    {q: 'More questions so you can actually have time to vote on some of them?', up: 0, down: 0, upvoted: false, downvoted: false },
+    {q: 'blah blah blah blah blah?', up: 0, down: 0, upvoted: false, downvoted: false }
 ];
 
-// FUNCTIONS
+var active = [];
 
+
+// Timer
+var timerInterval;
+var timerActive = false;
+var checkInterval = window.setInterval(checkQuestions, 10000);
+
+var timer = {
+    time: 16,
+
+    reset: function() {
+        timer.time = 16;
+    },
+
+    start: function() {
+        if (!timerActive) {
+            timerInterval = setInterval(timer.countDown, 1000);
+            timerActive = true;
+            // $('#timer').text('');
+        }
+    },
+
+    countDown: function() {
+        timer.time--;
+        $('#timer').text(`${timer.time} seconds remaining.`)
+        if (timer.time <= 0) {
+            timer.stop();
+            setTimeout(function(){ next(); }, 1500)
+        }
+    },
+
+    stop: function() {
+        clearInterval(timerInterval);
+        timerActive = false;
+        $('#timer').text('');
+    }
+};
+
+// FUNCTIONS
+// This is breaking ratings when the questions are redone
+// Need to divide it up     
 function addQuestion() {
     $('#tba-container').empty();
 
@@ -24,10 +66,21 @@ function addQuestion() {
 
         // Create upvote+downvote arrows
         var up = $('<i class="upvote fas fa-chevron-up"></i>');
-        up.attr('data-vote', 'none');
         var down = $('<i class="downvote fas fa-chevron-down"></i>');
-        down.attr('data-vote', 'none');
         var arrows = $('<div class="votes">');
+
+        if (questionsArray[i].upvoted) {
+            up.attr('data-vote', 'upvoted');
+            down.attr('data-vote', 'none');
+        }
+        else if (questionsArray[i].downvoted) {
+            up.attr('data-vote',  'none');
+            down.attr('data-vote', 'downvoted');
+        }
+        else {
+            up.attr('data-vote', 'none');
+            down.attr('data-vote', 'none');
+        }
 
         // Arrow IDs based on the index number
         // Allows upvote/downvotes to work without one arrow affecting every question's rating
@@ -49,6 +102,39 @@ function addQuestion() {
     }
 };
 
+// This is a little unnecessary but adds delay after page load
+function loadQuestion() {
+    setTimeout(function(){ next(); }, 1500);
+};
+
+function checkQuestions() {
+    if (!timerActive && questionsArray.length > 0) {
+        next();
+        $('#sketch-box').show();
+        $('.game-buttons').show();
+    }
+};
+
+function next() {
+    timer.reset();
+
+    if (questionsArray.length > 0) {
+        active.shift();
+        active.push(questionsArray.shift());
+        addQuestion();
+        $('#active').text(active[0].q);
+        // timer.reset();
+        timer.start();
+    }
+    else {
+        $('#active').empty();
+        // timer.reset();
+        timer.stop();
+        $('#sketch-box').hide();
+        $('.game-buttons').hide();
+    }    
+};
+
 
 function updateVote(index) {
     $(`#rating-${index}`).text(questionsArray[index].up - questionsArray[index].down);
@@ -67,10 +153,9 @@ function updateVote(index) {
 // });
 
 // User upvotes a question
-$(document).on('click', `.upvote`, function() {
+$(document).on('click', '.upvote', function() {
     // Index to use for local array for testing
     var index = (this.id).split('-').slice(-1);
-    
     
     var upElem = $(`#up-${index}`);
     var downElem = $(`#down-${index}`);
@@ -78,12 +163,7 @@ $(document).on('click', `.upvote`, function() {
     var upState = upElem.attr('data-vote');
     var downState = downElem.attr('data-vote');
 
-    if (upState === 'none' && downState === 'none') {
-        upElem.attr('data-vote', 'upvoted');
-
-        questionsArray[index].up++;
-    }
-    else if (upState === 'upvoted') {
+    if (upState === 'upvoted') {
         console.log('You already upvoted.');
         return false;
     }
@@ -94,7 +174,17 @@ $(document).on('click', `.upvote`, function() {
         
         questionsArray[index].up++;
         questionsArray[index].down--;
-    }    
+        questionsArray[index].upvoted = true;
+        questionsArray[index].downvoted = false;
+    }
+    else {
+        upElem.attr('data-vote', 'upvoted');
+        downElem.attr('data-vote', 'none');
+
+        questionsArray[index].up++;
+        questionsArray[index].upvoted = true;
+        questionsArray[index].downvoted = false;
+    }  
 
     // firebase - not sure how this works with selecting the specific question
     // upVotes++;
@@ -117,12 +207,7 @@ $(document).on('click', `.downvote`, function() {
     var upState = upElem.attr('data-vote');
     var downState = downElem.attr('data-vote');
 
-    if (upState === 'none' && downState === 'none') {
-        downElem.attr('data-vote', 'downvoted');
-
-        questionsArray[index].down++;
-    }
-    else if (downState === 'downvoted') {
+    if (downState === 'downvoted') {
         console.log('You already downvoted.');
         return false;
     }
@@ -133,13 +218,17 @@ $(document).on('click', `.downvote`, function() {
         
         questionsArray[index].up--;
         questionsArray[index].down++;
+        questionsArray[index].upvoted = false;
+        questionsArray[index].downvoted = true;
     }
+    else {
+        downElem.attr('data-vote', 'downvoted');
+        upElem.attr('data-vote', 'none');
 
-    // firebase - not sure how this works with selecting the specific question
-    // downVotes++
-    // db.ref().set({
-    //     down: downVotes
-    // })
+        questionsArray[index].down++;
+        questionsArray[index].upvoted = false;
+        questionsArray[index].downvoted = true;
+    }
     
     updateVote(index);
     console.log(`#${this.id} Downvoted!`);
@@ -171,6 +260,9 @@ $('#submit').on('click', function() {
         console.log("you are signed in")
     }
 });
+
+// Starting the "game"
+$(document).ready(loadQuestion);
 
 // Updating the DOM with the sample questions from the array
 addQuestion(); 

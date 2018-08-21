@@ -24,28 +24,7 @@ function getRedditData(subreddit,maxQs){
   //   console.log(response.data);
   })
 }
-firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
 
-/*       User is signed in.
- */      
-      var displayName = user.displayName;
-      var email = user.email;
-      // var emailVerified = user.emailVerified;
-      // var isAnonymous = user.isAnonymous;
-      // var uid = user.uid;
-      // var providerData = user.providerData;
-
-   firebase.database().ref("/users/"+email).set({
-          user: displayName,
-          email: email
-    })
-      console.log(displayName + ", you successfully signed in")
-    } else {
-      // not signed in
-      $(".guest-text").addClass("visible")
-    }
-  });
   
 var uiConfig = {
   callbacks: {
@@ -69,11 +48,24 @@ var uiConfig = {
 $(document).ready(function(){
 
     //  check if the current user session is in our db
+  firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        var displayName = user.displayName;
+        var email = user.email;
+     db.ref("/users/"+email).set({
+            user: displayName,
+            email: email
+      })
+        console.log(displayName + ", you successfully signed in")
+      } else {
+        // not signed in
+        $(".guest-text").addClass("visible")
+      }
+    });
+
   if(!firebase.auth().user){
       $(".guest-text").removeClass("hidden")
   }
-   
-
     // creates the login container
     $("#login").on("click",function()
     {

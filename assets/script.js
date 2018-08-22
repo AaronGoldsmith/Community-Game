@@ -10,42 +10,21 @@ function QuestionObject(q,up,down,aut,date){
   }
   return question;
 }
-function getRedditData(subreddit,maxQs){
-  var queryURL = "https://www.reddit.com/r/"+ subreddit +"/top/.json?count=10";
-  //gets a large chunk of data about a question
-  var questions = [];
-  $.ajax({
-    url: queryURL,
-    data: {limit: maxQs, order: "desc"}, 
-    method: "GET"
-  }).then(function(response) {
-      return response;
-  //   console.log(response);
-  //   console.log(response.data);
-  })
-}
-firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
+// function getRedditData(subreddit,maxQs){
+//   var queryURL = "https://www.reddit.com/r/"+ subreddit +"/top/.json?count=10";
+//   //gets a large chunk of data about a question
+//   var questions = [];
+//   $.ajax({
+//     url: queryURL,
+//     data: {limit: maxQs, order: "desc"}, 
+//     method: "GET"
+//   }).then(function(response) {
+//       return response;
+//   //   console.log(response);
+//   //   console.log(response.data);
+//   })
+// }
 
-/*       User is signed in.
- */      
-      var displayName = user.displayName;
-      var email = user.email;
-      // var emailVerified = user.emailVerified;
-      // var isAnonymous = user.isAnonymous;
-      // var uid = user.uid;
-      // var providerData = user.providerData;
-
-   firebase.database().ref("/users/"+email).set({
-          user: displayName,
-          email: email
-    })
-      console.log(displayName + ", you successfully signed in")
-    } else {
-      // not signed in
-      $(".guest-text").addClass("visible")
-    }
-  });
   
 var uiConfig = {
   callbacks: {
@@ -69,11 +48,24 @@ var uiConfig = {
 $(document).ready(function(){
 
     //  check if the current user session is in our db
+  firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        var displayName = user.displayName;
+        var email = user.email;
+     db.ref("/users/").push({
+            user: displayName,
+            email: email
+      })
+        console.log(displayName + ", you successfully signed in")
+      } else {
+        // not signed in
+        $(".guest-text").addClass("visible")
+      }
+    });
+
   if(!firebase.auth().user){
       $(".guest-text").removeClass("hidden")
   }
-   
-
     // creates the login container
     $("#login").on("click",function()
     {
@@ -88,7 +80,7 @@ $(document).ready(function(){
 
    
    // a little flippy floppy magic
-    $(".game-buttons").on("click",function(){
+    $(".game-buttons").on("click","button",function(){
       // check which btn class we have, and remove it
       if($(this).hasClass("btn-success")){
         $(this).removeClass("btn-success")

@@ -11,19 +11,16 @@ database.ref("upcomingQs").on("child_added", function(childSnapshot) {
 var questionsArray = [
     {q: 'Is this an example question?', up: 0, down: 0, upvoted: false, downvoted: false },
     {q: 'Is this the second example question?', up: 0, down: 0, upvoted: false, downvoted: false },
-    {q: 'More questions so you can actually have time to vote on some of them?', up: 0, down: 0, upvoted: false, downvoted: false },
-    {q: 'blah blah blah blah blah?', up: 0, down: 0, upvoted: false, downvoted: false }
 ];
 function questionDflt(question){
     return {q:question,up:0,down:0,upvoted:false,downvoted:false}
 }
-
 var active = [];
 
 // Timer
 var timerInterval;
 var timerActive = false;
-var checkInterval = window.setInterval(checkQuestions, 10000);
+// var checkInterval = window.setInterval(checkQuestions, 10000);
 var timer = {
     time: 16,
 
@@ -58,7 +55,6 @@ var timer = {
  
 function addQuestion() {
     $('#tba-container').empty();
-
     for (var i = 0; i < questionsArray.length; i++) {
         // Create single row+column for new question
         var newRow = $('<tr>');
@@ -108,7 +104,11 @@ function addQuestion() {
 // This is a little unnecessary but adds delay after page load
 function loadQuestion() {
     setTimeout(function(){ next(); }, 1500);
+    if(questionsArray.length<=4){
+        getRedditData("DoesAnybodyElse");
+    }
 };
+
 
 // Restarts the game and shows p5 + buttons if it sees a question
 // This is why next() runs even though the document.ready event was disabled (don't know why it was disabled)
@@ -134,8 +134,11 @@ function next() {
         active.shift();
         active.push(questionsArray.shift());
         addQuestion();
-        $('#active').text(active[0].q);
+        $('#active').html(active[0].q);
         timer.start();
+    }
+    else if(questionsArray.length <=5){
+        getRedditData("DoesAnybodyElse");
     }
     else {
         $('#active').empty();
@@ -270,7 +273,6 @@ $('#submit').on('click', function() {
 $(document).ready(loadQuestion);
 
 // Updating the DOM with the sample questions from the array
-addQuestion(); 
 
 
 
@@ -303,6 +305,7 @@ function formatDAE( redditTitle ){
     }
   return question;
 }
+
 function getRedditData(subreddit,maxQs){
     var queryURL = "https://www.reddit.com/r/"+ subreddit +"/top/.json";
     //gets a large chunk of data about a question
@@ -345,6 +348,7 @@ function getRedditData(subreddit,maxQs){
    
 }
 
+
 // PRE: a json data object consisting 
 //      of a single question
 function extractData(Data){
@@ -356,20 +360,38 @@ function extractData(Data){
         return QuestionObject(formattedTitle,0,0,author,creation)
 }
 
-database.ref("historical").on("child_added",function (snapshot){
-    console.log("added to historical")
-})
-
- database.ref("activeQ").on('child_added', function (snapshot) {
-     var message = snapshot.val();
 
      // questionsArray.push(message);
-     $('#active').html(message.q);
- });
+    
 // db triggers
 $(document).ready(function(){
-    getRedditData("DoesAnybodyElse",10);
-
-  
-    
-})
+    addQuestion(); 
+    // getRedditData("DoesAnybodyElse");
+});
+function getRedditData(subreddit){
+    database.ref("/upcomingQs").remove();
+    var queryURL = "https://www.reddit.com/r/"+ subreddit +"/top/.json";
+    //gets a large chunk of data about a question
+    $.ajax({
+      url: queryURL,
+      method: "GET",
+    }).then(function(response) {
+        var children = response.data.children;
+        for(var i = 0;i<children.length&&i<5;i++){
+        //     // console.log(children[i].data);
+            var ID = children[i].data.id
+            var title = children[i].data.title;
+            var aut = children[i].data.author
+            var date = children[i].data.created_utc
+           
+            database.ref("/upcomingQs").push( {
+                q: formatDAE(title),
+                author: aut,
+                up: 0,
+                id: ID,
+                down: 0,
+                created: date,
+            });
+        }
+    });
+}

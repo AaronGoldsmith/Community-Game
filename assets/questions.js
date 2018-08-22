@@ -11,6 +11,7 @@ database.ref("upcomingQs").on("child_added", function(childSnapshot) {
 var questionsArray = [
     {q: 'Are you ready to play?', up: 0, down: 0, upvoted: false, downvoted: false },
 ];
+
 var active = [];
 
 // Timer
@@ -102,6 +103,7 @@ function loadQuestion() {
     setTimeout(function(){ next(); }, 1500);
     if(questionsArray.length<=4){
         getRedditData("DoesAnybodyElse",4);
+
     }
 };
 
@@ -135,6 +137,9 @@ function next() {
         $('#active').html(active[0].q);
         timer.start();
     }
+    else if(questionsArray.length <=5){
+        getRedditData("DoesAnybodyElse");
+    }
     else {
         $('#active').empty();
         timer.stop();
@@ -166,8 +171,12 @@ $(document).on('click', '.upvote', function() {
     var downState = downElem.attr('data-vote');
 
     if (upState === 'upvoted') {
-        console.log('You already upvoted.');
-        return false;
+        console.log('You removed your upvote.');
+        upElem.attr('data-vote', 'none');
+        downElem.attr('data-vote', 'none');
+
+        questionsArray[index].up--;
+        questionsArray[index].upvoted = false;
     }
     else if (downState === 'downvoted') {
         console.log('You changed your vote.');
@@ -216,8 +225,12 @@ $(document).on('click', `.downvote`, function() {
     var downState = downElem.attr('data-vote');
 
     if (downState === 'downvoted') {
-        console.log('You already downvoted.');
-        return false;
+        console.log('You removed your downvote.');
+        upElem.attr('data-vote', 'none');
+        downElem.attr('data-vote', 'none');
+        
+        questionsArray[index].down--;
+        questionsArray[index].downvoted = false;
     }
     else if (upState === 'upvoted') {
         console.log('You changed your vote.');
@@ -253,8 +266,8 @@ $('#submit').on('click', function() {
     event.preventDefault();
     var question = $('#question-input').val().trim();
     
-    // For testing only - pushes to array
     var newQ  = {q: question, up: 0, down: 0, upvoted: false, id: Math.random()*1000, downvoted:false}
+
     database.ref("upcomingQs").push(newQ);
     // Later this function should be called in the snapshot event instead of the click
     addQuestion();
@@ -312,7 +325,8 @@ function getRedditData(subreddit,maxQs){
       method: "GET"
     }).then(function(response) {
         var children = response.data.children;
-        for(var i = 0;i<children.length&&i<5;i++){
+        for(var i = 0;i<children.length&&i<maxQs;i++){
+
         //     // console.log(children[i].data);
             var ID = children[i].data.id
             var title = children[i].data.title;
@@ -331,6 +345,7 @@ function getRedditData(subreddit,maxQs){
                 }
                 console.log(obj)
             database.ref("upcomingQs").push(obj);
+
 
             }
         
@@ -359,30 +374,3 @@ $(document).ready(function(){
     addQuestion(); 
     // getRedditData("DoesAnybodyElse");
 });
-function getRedditData(subreddit){
-    database.ref("/upcomingQs").remove();
-    var queryURL = "https://www.reddit.com/r/"+ subreddit +"/top/.json";
-    //gets a large chunk of data about a question
-    $.ajax({
-      url: queryURL,
-      method: "GET",
-    }).then(function(response) {
-        var children = response.data.children;
-        for(var i = 0;i<children.length&&i<5;i++){
-        //     // console.log(children[i].data);
-            var ID = children[i].data.id
-            var title = children[i].data.title;
-            var aut = children[i].data.author
-            var date = children[i].data.created_utc
-           
-            database.ref("/upcomingQs").push( {
-                q: formatDAE(title),
-                author: aut,
-                up: 0,
-                id: ID,
-                down: 0,
-                created: date,
-            });
-        }
-    });
-}

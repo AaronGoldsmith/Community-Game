@@ -31,19 +31,19 @@ var uiConfig = {
 $(document).ready(function(){
 
 // EVERYTIME our authentication status changes
-firebase.auth().onAuthStateChanged(function(user) {
+   firebase.auth().onAuthStateChanged(function(user) {
       if (user) {
          // this is a new user in our DB 
          //  (i.e logging in for the first time)
-
         var displayName = user.displayName;
         var email = user.email;
         var first = displayName.split(" ")[0];
-
-        db.ref("users/").push({
-                user: displayName,
-                email: email
-        })
+        if(!db.ref("users").hasChild(displayName)){
+          db.ref("/users").push({
+                  user: displayName,
+                  email: email
+          })
+        }
         console.log(first + ", you successfully signed in")
       } else {
         $(".guest-text").addClass("visible")

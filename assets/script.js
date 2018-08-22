@@ -38,7 +38,7 @@ $(document).ready(function(){
         var displayName = user.displayName;
         var email = user.email;
         var first = displayName.split(" ")[0];
-        if(!db.ref("users").hasChild(email)){
+        if(!db.ref("/users").hasChild(email)){
           db.ref("/users").push({
                   user: displayName,
                   email: email

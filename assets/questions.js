@@ -1,25 +1,17 @@
 // VARIABLES
+var database = firebase.database()
 var question = '';
-var db = firebase.database();
+
+database.ref("upcomingQs").on("child_added", function(childSnapshot) {
+    console.log(childSnapshot.val());
+    questionsArray.push(childSnapshot.val())
+});
 
 // Temporary question array for testing - this should be done firebase-side
 var questionsArray = [
-    {q: 'Is this an example question?', up: 0, down: 0, upvoted: false, downvoted: false },
-    {q: 'Is this the second example question?', up: 0, down: 0, upvoted: false, downvoted: false },
-    {q: 'More questions so you can actually have time to vote on some of them?', up: 0, down: 0, upvoted: false, downvoted: false },
-    {q: 'blah blah blah blah blah?', up: 0, down: 0, upvoted: false, downvoted: false }
+    {q: 'Are you ready to play?', up: 0, down: 0, upvoted: false, downvoted: false },
 ];
 
-function fillQuestionArray(){
-    var rootRef = db.ref("upcomingQs");
-    rootRef.on("value")
-    .then(function(snapshot) {
-        var key = snapshot.key; // null
-        var childKey = snapshot.child("/upcomingQs").key
-    });
-    questionsArray.push(key[childKey]);
-    console.log(questiosnArray);
-}
 var active = [];
 
 // Timer
@@ -31,10 +23,13 @@ var timer = {
 
     reset: function() {
         timer.time = 16;
+        //FIREBASED-RELATED. Set the timeLeft to be the same as timer.time
+        updateToFireBase();
     },
 
     start: function() {
         if (!timerActive) {
+            //Note. In countdown, I added in events that updates timeLeft to be same as timer.time
             timerInterval = setInterval(timer.countDown, 1000);
             timerActive = true;
         }
@@ -43,9 +38,13 @@ var timer = {
     countDown: function() {
         timer.time--;
         $('#timer').text(`${timer.time} seconds remaining.`)
+        //FIREBASED-RELATED. Set the timeLeft to be the same as timer.time
+        updateToFireBase();
         if (timer.time <= 0) {
             timer.stop();
             setTimeout(function(){ next(); }, 1500)
+            //FIREBASED-RELATED. Set the timeLeft to be the same as timer.time
+            updateToFireBase();
         }
     },
 
@@ -57,7 +56,14 @@ var timer = {
 };
 
 // FUNCTIONS
- 
+//FIREBASE-RELATED. Completely new from what's found in timer.html
+// updates timeLeft to be the same as timer.time
+var updateToFireBase = function(){
+    database.ref("/activeQ").set({
+        timeLeft: timer.time
+    })
+}; 
+
 function addQuestion() {
     $('#tba-container').empty();
     for (var i = 0; i < questionsArray.length; i++) {
@@ -109,6 +115,10 @@ function addQuestion() {
 // This is a little unnecessary but adds delay after page load
 function loadQuestion() {
     setTimeout(function(){ next(); }, 1500);
+    if(questionsArray.length<=4){
+        getRedditData("DoesAnybodyElse",4);
+
+    }
 };
 
 
@@ -119,12 +129,11 @@ function checkQuestions() {
     // Commenting this out because it's breaking this function
     
     // check for questions in db?
-    // firebase.database().ref.once('value')
-    //     .then(function(dataSnapshot) {
-    //         // handle read data.
-    // });
     if (!timerActive && questionsArray.length > 0) {
         next();
+        if(questionsArray.length<=4){
+            getRedditData("DoesAnybodyElse");
+        }
         $('#sketch-box').show();
         $('.game-buttons').show();
     }
@@ -139,13 +148,18 @@ function next() {
         active.shift();
         active.push(questionsArray.shift());
         addQuestion();
-        $('#active').text(active[0].q);
+        $('#active').html(active[0].q);
         timer.start();
+    }
+    else if(questionsArray.length <=5){
+        getRedditData("DoesAnybodyElse");
     }
     else {
         $('#active').empty();
         timer.stop();
         $('#sketch-box').hide();
+        $('.game-buttons').click()
+        $('.game-buttons button').removeClass("btn-danger")
         $('.game-buttons').hide();
     }    
 };
@@ -171,8 +185,12 @@ $(document).on('click', '.upvote', function() {
     var downState = downElem.attr('data-vote');
 
     if (upState === 'upvoted') {
-        console.log('You already upvoted.');
-        return false;
+        console.log('You removed your upvote.');
+        upElem.attr('data-vote', 'none');
+        downElem.attr('data-vote', 'none');
+
+        questionsArray[index].up--;
+        questionsArray[index].upvoted = false;
     }
     else if (downState === 'downvoted') {
         console.log('You changed your vote.');
@@ -221,8 +239,12 @@ $(document).on('click', `.downvote`, function() {
     var downState = downElem.attr('data-vote');
 
     if (downState === 'downvoted') {
-        console.log('You already downvoted.');
-        return false;
+        console.log('You removed your downvote.');
+        upElem.attr('data-vote', 'none');
+        downElem.attr('data-vote', 'none');
+        
+        questionsArray[index].down--;
+        questionsArray[index].downvoted = false;
     }
     else if (upState === 'upvoted') {
         console.log('You changed your vote.');
@@ -257,21 +279,12 @@ $(document).on('click', `.downvote`, function() {
 $('#submit').on('click', function() {
     event.preventDefault();
     var question = $('#question-input').val().trim();
-    var upVotes = 0;
-    var downVotes = 0;
     
-    // For testing only - pushes to array
-    var newQ  = {q: question, up: upVotes, down: downVotes}
-    questionsArray.push(newQ);
+    var newQ  = {q: question, up: 0, down: 0, upvoted: false, id: Math.random()*1000, downvoted:false}
+
+    database.ref("upcomingQs").push(newQ);
     // Later this function should be called in the snapshot event instead of the click
     addQuestion();
-
-    // For actual - push to database
-    // db.ref().push({
-    //     q: question,
-    //     up: upVotes,
-    //     down: downVotes
-    // });
 
     $('#question-input').val('');
     // debugging 
@@ -315,7 +328,47 @@ function formatDAE( redditTitle ){
         date: date          // date posted
     }
   return question;
- }
+}
+
+function getRedditData(subreddit,maxQs){
+    var queryURL = "https://www.reddit.com/r/"+ subreddit +"/top/.json?t=year";
+    //gets a large chunk of data about a question
+    database.ref("/upcomingQs").removeValue()
+
+    $.ajax({
+      url: queryURL,
+      method: "GET"
+    }).then(function(response) {
+        var children = response.data.children;
+        for(var i = 0;i<children.length&&i<maxQs;i++){
+
+        //     // console.log(children[i].data);
+            var ID = children[i].data.id
+            var title = children[i].data.title;
+            var aut = children[i].data.author
+            var date = children[i].data.created_utc
+        //     questions.push(child.data);
+            var obj = {
+                    q: formatDAE(title),
+                    up: 0,
+                    id: ID,
+                    down: 0,
+                    upvoted: false,
+                    downvoted: false,
+                    // author: aut,
+                    // created: date
+                }
+                console.log(obj)
+            database.ref("upcomingQs").push(obj);
+
+
+            }
+        
+    })
+
+   
+}
+
 
 // PRE: a json data object consisting 
 //      of a single question
@@ -329,54 +382,14 @@ function extractData(Data){
 }
 
 
+     // questionsArray.push(message);
+    
 // db triggers
 $(document).ready(function(){
-    
-    db = firebase.database().ref();
-
-    db.child("upcomingQs").on("child_added",function(snapshot){
-       
-    });
-   db.child("historical").on("child_added",function (snapshot){
-       console.log("added to historical")
-   })
-
-    db.child("activeQ").on('child_added', function (snapshot) {
-        var message = snapshot.val();
-        $('#active').html(message.question);
-    });
-    
-
     addQuestion(); 
-    getRedditData("DoesAnybodyElse");
-
-
-
-})
-function getRedditData(subreddit){
-    var queryURL = "https://www.reddit.com/r/"+ subreddit +"/top/.json";
-    //gets a large chunk of data about a question
-    db = firebase.database();
-    $.ajax({
-      url: queryURL,
-      method: "GET"
-    }).then(function(response) {
-        var children = response.data.children;
-        for(var i = 0;i<children.length;i++){
-        //     // console.log(children[i].data);
-            var ID = children[i].data.id
-            var title = children[i].data.title;
-            var aut = children[i].data.author
-            var date = children[i].data.created_utc
-           
-            db.ref("/upcomingQs").push( {
-                question: formatDAE(title),
-                agrees: 0,
-                id: ID,
-                disagrees: 0,
-                author: aut,
-                created: date
-            });
-        }
-    }) 
-}
+    // getRedditData("DoesAnybodyElse");
+<<<<<<< HEAD
+});
+=======
+});
+>>>>>>> e68da4f5cc501856bc9fbe026ab77906ec44bb8d

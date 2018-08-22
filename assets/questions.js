@@ -169,8 +169,12 @@ $(document).on('click', '.upvote', function() {
     var downState = downElem.attr('data-vote');
 
     if (upState === 'upvoted') {
-        console.log('You already upvoted.');
-        return false;
+        console.log('You removed your upvote.');
+        upElem.attr('data-vote', 'none');
+        downElem.attr('data-vote', 'none');
+
+        questionsArray[index].up--;
+        questionsArray[index].upvoted = false;
     }
     else if (downState === 'downvoted') {
         console.log('You changed your vote.');
@@ -219,8 +223,12 @@ $(document).on('click', `.downvote`, function() {
     var downState = downElem.attr('data-vote');
 
     if (downState === 'downvoted') {
-        console.log('You already downvoted.');
-        return false;
+        console.log('You removed your downvote.');
+        upElem.attr('data-vote', 'none');
+        downElem.attr('data-vote', 'none');
+        
+        questionsArray[index].down--;
+        questionsArray[index].downvoted = false;
     }
     else if (upState === 'upvoted') {
         console.log('You changed your vote.');

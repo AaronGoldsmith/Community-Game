@@ -1,6 +1,11 @@
 // VARIABLES
-var database;
+var database = firebase.database()
 var question = '';
+
+database.ref("upcomingQs").on("child_added", function(childSnapshot) {
+    console.log(childSnapshot.val());
+    questionsArray.push(childSnapshot.val())
+});
 
 // Temporary question array for testing - this should be done firebase-side
 var questionsArray = [
@@ -112,10 +117,7 @@ function checkQuestions() {
     // Commenting this out because it's breaking this function
     
     // check for questions in db?
-    // firebase.database().ref.once('value')
-    //     .then(function(dataSnapshot) {
-    //         // handle read data.
-    // });
+    
     if (!timerActive && questionsArray.length > 0) {
         next();
         $('#sketch-box').show();
@@ -250,22 +252,12 @@ $(document).on('click', `.downvote`, function() {
 $('#submit').on('click', function() {
     event.preventDefault();
     var question = $('#question-input').val().trim();
-    var upVotes = 0;
-    var downVotes = 0;
     
     // For testing only - pushes to array
-    database.ref()
-    var newQ  = {q: question, up: upVotes, down: downVotes, upvoted: false, downvoted:false}
-    questionsArray.push(newQ);
+    var newQ  = {q: question, up: 0, down: 0, upvoted: false, downvoted:false}
+    database.ref("upcomingQs").push(newQ);
     // Later this function should be called in the snapshot event instead of the click
     addQuestion();
-
-    // For actual - push to database
-    // db.ref().push({
-    //     q: question,
-    //     up: upVotes,
-    //     down: downVotes
-    // });
 
     $('#question-input').val('');
     // debugging 
@@ -364,19 +356,20 @@ function extractData(Data){
         return QuestionObject(formattedTitle,0,0,author,creation)
 }
 
+database.ref("historical").on("child_added",function (snapshot){
+    console.log("added to historical")
+})
 
+ database.ref("activeQ").on('child_added', function (snapshot) {
+     var message = snapshot.val();
+
+     // questionsArray.push(message);
+     $('#active').html(message.q);
+ });
 // db triggers
 $(document).ready(function(){
     getRedditData("DoesAnybodyElse",10);
 
-   database.ref("historical").on("child_added",function (snapshot){
-       console.log("added to historical")
-   })
-
-    database.ref("activeQ").on('child_added', function (snapshot) {
-        var message = snapshot.val();
-        questionsArray.push(message);
-        $('#active').html(message.question);
-    });
+  
     
 })

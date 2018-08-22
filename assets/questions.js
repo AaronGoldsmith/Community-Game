@@ -388,8 +388,5 @@ function extractData(Data){
 $(document).ready(function(){
     addQuestion(); 
     // getRedditData("DoesAnybodyElse");
-<<<<<<< HEAD
 });
-=======
-});
->>>>>>> e68da4f5cc501856bc9fbe026ab77906ec44bb8d
+

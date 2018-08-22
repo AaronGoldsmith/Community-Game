@@ -10,9 +10,7 @@ function setup() {
   canvas = createCanvas(windowWidth/4, 40);
   canvas.parent('sketch-box');
 	startingPt = createVector(width/2,height/2);
-  // p = createP(stats1);
-  
-
+  // p = createP(stats1); 
 }
 
 function draw() {

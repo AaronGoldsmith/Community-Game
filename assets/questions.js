@@ -1,4 +1,5 @@
 // VARIABLES
+var database;
 var question = '';
 
 // Temporary question array for testing - this should be done firebase-side
@@ -8,6 +9,9 @@ var questionsArray = [
     {q: 'More questions so you can actually have time to vote on some of them?', up: 0, down: 0, upvoted: false, downvoted: false },
     {q: 'blah blah blah blah blah?', up: 0, down: 0, upvoted: false, downvoted: false }
 ];
+function questionDflt(question){
+    return {q:question,up:0,down:0,upvoted:false,downvoted:false}
+}
 
 var active = [];
 
@@ -250,7 +254,8 @@ $('#submit').on('click', function() {
     var downVotes = 0;
     
     // For testing only - pushes to array
-    var newQ  = {q: question, up: upVotes, down: downVotes}
+    database.ref()
+    var newQ  = {q: question, up: upVotes, down: downVotes, upvoted: false, downvoted:false}
     questionsArray.push(newQ);
     // Later this function should be called in the snapshot event instead of the click
     addQuestion();
@@ -330,11 +335,11 @@ function getRedditData(subreddit,maxQs){
                     author: aut,
                     created: date
                 }
-                if(!db.hasChild(ID).exists()){
+                if(!database.ref("/upcomingQs").hasChild(ID).exists()){
                     firebase.database().ref("/upcomingQs/"+ID).push(obj);
                 }
 
-            db.child("/upcomingQs").child(ID).on('value', function(snapshot){
+            database.ref("/upcomingQs").child(ID).on('value', function(snapshot){
                 console.log("checking for 'historical' questions")
                 if(!snapshot.exists()){
                     console.log("found " + ID)
@@ -359,19 +364,18 @@ function extractData(Data){
         return QuestionObject(formattedTitle,0,0,author,creation)
 }
 
-var db;
 
 // db triggers
 $(document).ready(function(){
     getRedditData("DoesAnybodyElse",10);
-    db = firebase.database().ref();
 
-   db.child("historical").on("child_added",function (snapshot){
+   database.ref("historical").on("child_added",function (snapshot){
        console.log("added to historical")
    })
 
-    db.child("activeQ").on('child_added', function (snapshot) {
+    database.ref("activeQ").on('child_added', function (snapshot) {
         var message = snapshot.val();
+        questionsArray.push(message);
         $('#active').html(message.question);
     });
     

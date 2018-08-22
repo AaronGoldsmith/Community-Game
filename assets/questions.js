@@ -23,10 +23,13 @@ var timer = {
 
     reset: function() {
         timer.time = 16;
+        //FIREBASED-RELATED. Set the timeLeft to be the same as timer.time
+        updateToFireBase();
     },
 
     start: function() {
         if (!timerActive) {
+            //Note. In countdown, I added in events that updates timeLeft to be same as timer.time
             timerInterval = setInterval(timer.countDown, 1000);
             timerActive = true;
         }
@@ -35,9 +38,13 @@ var timer = {
     countDown: function() {
         timer.time--;
         $('#timer').text(`${timer.time} seconds remaining.`)
+        //FIREBASED-RELATED. Set the timeLeft to be the same as timer.time
+        updateToFireBase();
         if (timer.time <= 0) {
             timer.stop();
             setTimeout(function(){ next(); }, 1500)
+            //FIREBASED-RELATED. Set the timeLeft to be the same as timer.time
+            updateToFireBase();
         }
     },
 
@@ -49,7 +56,14 @@ var timer = {
 };
 
 // FUNCTIONS
- 
+//FIREBASE-RELATED. Completely new from what's found in timer.html
+// updates timeLeft to be the same as timer.time
+var updateToFireBase = function(){
+    database.ref("/activeQ").set({
+        timeLeft: timer.time
+    })
+}; 
+
 function addQuestion() {
     $('#tba-container').empty();
     for (var i = 0; i < questionsArray.length; i++) {
@@ -375,3 +389,4 @@ $(document).ready(function(){
     addQuestion(); 
     // getRedditData("DoesAnybodyElse");
 });
+

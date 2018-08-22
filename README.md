@@ -1,5 +1,6 @@
-# group-adae
+# Community Survey
 Group Project 2 
+![](https://media.giphy.com/media/9JkdCGm3HhhUaBMYNi/giphy.gif | width=100)
 
 
 Requirements: Internet Access, Mouse, Windows/Mac/Linux operating system, (Windows 95 or better)

@@ -320,6 +320,7 @@ function getRedditData(subreddit,maxQs){
     var queryURL = "https://www.reddit.com/r/"+ subreddit +"/top/.json?t=year";
     //gets a large chunk of data about a question
     database.ref("/upcomingQs").delete()
+
     $.ajax({
       url: queryURL,
       method: "GET"

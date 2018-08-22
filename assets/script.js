@@ -10,20 +10,20 @@ function QuestionObject(q,up,down,aut,date){
   }
   return question;
 }
-function getRedditData(subreddit,maxQs){
-  var queryURL = "https://www.reddit.com/r/"+ subreddit +"/top/.json?count=10";
-  //gets a large chunk of data about a question
-  var questions = [];
-  $.ajax({
-    url: queryURL,
-    data: {limit: maxQs, order: "desc"}, 
-    method: "GET"
-  }).then(function(response) {
-      return response;
-  //   console.log(response);
-  //   console.log(response.data);
-  })
-}
+// function getRedditData(subreddit,maxQs){
+//   var queryURL = "https://www.reddit.com/r/"+ subreddit +"/top/.json?count=10";
+//   //gets a large chunk of data about a question
+//   var questions = [];
+//   $.ajax({
+//     url: queryURL,
+//     data: {limit: maxQs, order: "desc"}, 
+//     method: "GET"
+//   }).then(function(response) {
+//       return response;
+//   //   console.log(response);
+//   //   console.log(response.data);
+//   })
+// }
 
   
 var uiConfig = {
@@ -80,7 +80,7 @@ $(document).ready(function(){
 
    
    // a little flippy floppy magic
-    $(".game-buttons").on("click",function(){
+    $(".game-buttons").on("click","button",function(){
       // check which btn class we have, and remove it
       if($(this).hasClass("btn-success")){
         $(this).removeClass("btn-success")

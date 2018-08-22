@@ -105,7 +105,7 @@ form {
 #agree, #disagree {
     width: 90px;
     border: none;
-    background: #00aeff;
+    /* background: #00aeff; */
 }
 
 #agree:hover {

@@ -9,12 +9,8 @@ database.ref("upcomingQs").on("child_added", function(childSnapshot) {
 
 // Temporary question array for testing - this should be done firebase-side
 var questionsArray = [
-    {q: 'Is this an example question?', up: 0, down: 0, upvoted: false, downvoted: false },
-    {q: 'Is this the second example question?', up: 0, down: 0, upvoted: false, downvoted: false },
+    {q: 'Are you ready to play?', up: 0, down: 0, upvoted: false, downvoted: false },
 ];
-function questionDflt(question){
-    return {q:question,up:0,down:0,upvoted:false,downvoted:false}
-}
 var active = [];
 
 // Timer
@@ -105,7 +101,7 @@ function addQuestion() {
 function loadQuestion() {
     setTimeout(function(){ next(); }, 1500);
     if(questionsArray.length<=4){
-        getRedditData("DoesAnybodyElse");
+        getRedditData("DoesAnybodyElse",4);
     }
 };
 
@@ -117,9 +113,11 @@ function checkQuestions() {
     // Commenting this out because it's breaking this function
     
     // check for questions in db?
-    
     if (!timerActive && questionsArray.length > 0) {
         next();
+        if(questionsArray.length<=4){
+            getRedditData("DoesAnybodyElse");
+        }
         $('#sketch-box').show();
         $('.game-buttons').show();
     }
@@ -137,13 +135,12 @@ function next() {
         $('#active').html(active[0].q);
         timer.start();
     }
-    else if(questionsArray.length <=5){
-        getRedditData("DoesAnybodyElse");
-    }
     else {
         $('#active').empty();
         timer.stop();
         $('#sketch-box').hide();
+        $('.game-buttons').click()
+        $('.game-buttons button').removeClass("btn-danger")
         $('.game-buttons').hide();
     }    
 };
@@ -257,7 +254,7 @@ $('#submit').on('click', function() {
     var question = $('#question-input').val().trim();
     
     // For testing only - pushes to array
-    var newQ  = {q: question, up: 0, down: 0, upvoted: false, downvoted:false}
+    var newQ  = {q: question, up: 0, down: 0, upvoted: false, id: Math.random()*1000, downvoted:false}
     database.ref("upcomingQs").push(newQ);
     // Later this function should be called in the snapshot event instead of the click
     addQuestion();
@@ -307,15 +304,15 @@ function formatDAE( redditTitle ){
 }
 
 function getRedditData(subreddit,maxQs){
-    var queryURL = "https://www.reddit.com/r/"+ subreddit +"/top/.json";
+    var queryURL = "https://www.reddit.com/r/"+ subreddit +"/top/.json?t=year";
     //gets a large chunk of data about a question
-
+    database.ref("/upcomingQs").removeValue()
     $.ajax({
       url: queryURL,
       method: "GET"
     }).then(function(response) {
         var children = response.data.children;
-        for(var i = 0;i<maxQs;i++){
+        for(var i = 0;i<children.length&&i<5;i++){
         //     // console.log(children[i].data);
             var ID = children[i].data.id
             var title = children[i].data.title;
@@ -323,24 +320,18 @@ function getRedditData(subreddit,maxQs){
             var date = children[i].data.created_utc
         //     questions.push(child.data);
             var obj = {
-                    question: formatDAE(title),
-                    agrees: 0,
+                    q: formatDAE(title),
+                    up: 0,
                     id: ID,
-                    disagrees: 0,
-                    author: aut,
-                    created: date
+                    down: 0,
+                    upvoted: false,
+                    downvoted: false,
+                    // author: aut,
+                    // created: date
                 }
-                if(!database.ref("/upcomingQs").hasChild(ID).exists()){
-                    firebase.database().ref("/upcomingQs/"+ID).push(obj);
-                }
+                console.log(obj)
+            database.ref("upcomingQs").push(obj);
 
-            database.ref("/upcomingQs").child(ID).on('value', function(snapshot){
-                console.log("checking for 'historical' questions")
-                if(!snapshot.exists()){
-                    console.log("found " + ID)
-                    }
-        
-                });
             }
         
     })
